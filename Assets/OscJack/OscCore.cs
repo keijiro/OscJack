@@ -25,39 +25,39 @@ namespace OscJack
 
     public class OscParser
     {
-        Queue<OscMessage> messageQueue_;
-        Byte[] readBuffer_;
-        int readPoint_;
-
-        #region Public members
+        #region Public Methods And Properties
 
         public int MessageCount {
-            get { return messageQueue_.Count; }
+            get { return _messageQueue.Count; }
         }
 
         public OscParser()
         {
-            messageQueue_ = new Queue<OscMessage>();
+            _messageQueue = new Queue<OscMessage>();
         }
 
         public OscMessage PopMessage()
         {
-            return messageQueue_.Dequeue();
+            return _messageQueue.Dequeue();
         }
 
         public void FeedData(Byte[] data)
         {
-            readBuffer_ = data;
-            readPoint_ = 0;
+            _readBuffer = data;
+            _readPoint = 0;
 
             ReadMessage();
 
-            readBuffer_ = null;
+            _readBuffer = null;
         }
 
         #endregion
 
-        #region Private methods
+        #region Private Implementation
+
+        Queue<OscMessage> _messageQueue;
+        Byte[] _readBuffer;
+        int _readPoint;
 
         void ReadMessage()
         {
@@ -69,16 +69,16 @@ namespace OscJack
 
                 while (true)
                 {
-                    if (readPoint_ >= readBuffer_.Length) return;
+                    if (_readPoint >= _readBuffer.Length) return;
 
-                    var peek = readBuffer_[readPoint_];
+                    var peek = _readBuffer[_readPoint];
                     if (peek == '/' || peek == '#') {
                         ReadMessage();
                         return;
                     }
 
-                    var bundleEnd = readPoint_ + ReadInt32();
-                    while (readPoint_ < bundleEnd)
+                    var bundleEnd = _readPoint + ReadInt32();
+                    while (_readPoint < bundleEnd)
                         ReadMessage();
                 }
             }
@@ -105,53 +105,53 @@ namespace OscJack
                 }
             }
 
-            messageQueue_.Enqueue(temp);
+            _messageQueue.Enqueue(temp);
         }
 
         float ReadFloat32()
         {
             Byte[] temp = {
-                readBuffer_[readPoint_ + 3],
-                readBuffer_[readPoint_ + 2],
-                readBuffer_[readPoint_ + 1],
-                readBuffer_[readPoint_]
+                _readBuffer[_readPoint + 3],
+                _readBuffer[_readPoint + 2],
+                _readBuffer[_readPoint + 1],
+                _readBuffer[_readPoint]
             };
-            readPoint_ += 4;
+            _readPoint += 4;
             return BitConverter.ToSingle(temp, 0);
         }
 
         int ReadInt32 ()
         {
             int temp =
-                (readBuffer_[readPoint_ + 0] << 24) +
-                (readBuffer_[readPoint_ + 1] << 16) +
-                (readBuffer_[readPoint_ + 2] << 8) +
-                (readBuffer_[readPoint_ + 3]);
-            readPoint_ += 4;
+                (_readBuffer[_readPoint + 0] << 24) +
+                (_readBuffer[_readPoint + 1] << 16) +
+                (_readBuffer[_readPoint + 2] << 8) +
+                (_readBuffer[_readPoint + 3]);
+            _readPoint += 4;
             return temp;
         }
 
         long ReadInt64 ()
         {
             long temp =
-                ((long)readBuffer_[readPoint_ + 0] << 56) +
-                ((long)readBuffer_[readPoint_ + 1] << 48) +
-                ((long)readBuffer_[readPoint_ + 2] << 40) +
-                ((long)readBuffer_[readPoint_ + 3] << 32) +
-                ((long)readBuffer_[readPoint_ + 4] << 24) +
-                ((long)readBuffer_[readPoint_ + 5] << 16) +
-                ((long)readBuffer_[readPoint_ + 6] << 8) +
-                ((long)readBuffer_[readPoint_ + 7]);
-            readPoint_ += 8;
+                ((long)_readBuffer[_readPoint + 0] << 56) +
+                ((long)_readBuffer[_readPoint + 1] << 48) +
+                ((long)_readBuffer[_readPoint + 2] << 40) +
+                ((long)_readBuffer[_readPoint + 3] << 32) +
+                ((long)_readBuffer[_readPoint + 4] << 24) +
+                ((long)_readBuffer[_readPoint + 5] << 16) +
+                ((long)_readBuffer[_readPoint + 6] << 8) +
+                ((long)_readBuffer[_readPoint + 7]);
+            _readPoint += 8;
             return temp;
         }
 
         string ReadString()
         {
             var offset = 0;
-            while (readBuffer_[readPoint_ + offset] != 0) offset++;
-            var s = System.Text.Encoding.UTF8.GetString(readBuffer_, readPoint_, offset);
-            readPoint_ += (offset + 4) & ~3;
+            while (_readBuffer[_readPoint + offset] != 0) offset++;
+            var s = System.Text.Encoding.UTF8.GetString(_readBuffer, _readPoint, offset);
+            _readPoint += (offset + 4) & ~3;
             return s;
         }
 
@@ -159,8 +159,8 @@ namespace OscJack
         {
             var length = ReadInt32();
             var temp = new Byte[length];
-            Array.Copy(readBuffer_, readPoint_, temp, 0, length);
-            readPoint_ += (length + 3) & ~3;
+            Array.Copy(_readBuffer, _readPoint, temp, 0, length);
+            _readPoint += (length + 3) & ~3;
             return temp;
         }
 

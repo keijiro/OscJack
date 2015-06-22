@@ -6,52 +6,52 @@ namespace OscJack
 {
     public class OscServer
     {
-        Thread thread_;
-        UdpClient udpClient_;
-        IPEndPoint endPoint_;
-        OscParser osc_;
+        Thread _thread;
+        UdpClient _udpClient;
+        IPEndPoint _endPoint;
+        OscParser _osc;
 
         public bool IsRunning {
-            get { return thread_ != null && thread_.IsAlive; }
+            get { return _thread != null && _thread.IsAlive; }
         }
 
         public int MessageCount {
             get {
-                lock (osc_) return osc_.MessageCount;
+                lock (_osc) return _osc.MessageCount;
             }
         }
 
         public OscMessage PopMessage()
         {
-            lock (osc_) return osc_.PopMessage();
+            lock (_osc) return _osc.PopMessage();
         }
 
         public OscServer(int listenPort = 9000)
         {
-            endPoint_ = new IPEndPoint(IPAddress.Any, listenPort);
-            udpClient_ = new UdpClient(endPoint_);
-            osc_ = new OscParser();
+            _endPoint = new IPEndPoint(IPAddress.Any, listenPort);
+            _udpClient = new UdpClient(_endPoint);
+            _osc = new OscParser();
         }
 
         public void Start()
         {
-            if (thread_ == null) {
-                thread_ = new Thread(ServerLoop);
-                thread_.Start();
+            if (_thread == null) {
+                _thread = new Thread(ServerLoop);
+                _thread.Start();
             }
         }
 
         public void Close()
         {
-            udpClient_.Close();
+            _udpClient.Close();
         }
 
         void ServerLoop()
         {
             try {
                 while (true) {
-                    var data = udpClient_.Receive(ref endPoint_);
-                    lock (osc_) osc_.FeedData(data);
+                    var data = _udpClient.Receive(ref _endPoint);
+                    lock (_osc) _osc.FeedData(data);
                 }
             }
             catch (SocketException)

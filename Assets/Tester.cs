@@ -3,17 +3,16 @@ using OscJack;
 
 public class Tester : MonoBehaviour
 {
-    OscServer server;
-
     void Start()
     {
-        server = new OscServer();
-        server.Start();
+        OscDirectory.Instance.StartServer();
     }
 
     void Update()
     {
-        while (server.MessageCount > 0)
-            Debug.Log(server.PopMessage());
+        OscDirectory.Instance.Update();
+
+        var data = OscDirectory.Instance.GetData("/audio/loud");
+        if (data != null) Debug.Log(data[0]);
     }
 }

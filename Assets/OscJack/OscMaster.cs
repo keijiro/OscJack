@@ -20,29 +20,34 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
+using System;
 
 namespace OscJack
 {
-    // Configuration for OSC master
-    public static class OscMasterConfig
+    // OSC master directory class
+    // Provides the interface for the OSC master directory.
+    public static class OscMaster
     {
-        public static int[] listenPortList = { 9000 };
-    }
+        // UDP listening port number list
+        static int[] listenPortList = { 9000 };
 
-    // OSC master directory
-    // Provides the singleton instance of the OSC directory.
-    public class OscMaster : OscDirectory
-    {
-        public static OscMaster Instance {
-            get {
-                if (_instance == null)
-                    _instance = new OscMaster();
-                return _instance;
-            }
+        // Determines whether any data has arrived to a given address.
+        public static bool HasData(string address)
+        {
+            return _directory.HasData(address);
         }
 
-        static OscMaster _instance;
+        // Returns a data set which was sent to a given address.
+        public static Object[] GetData(string address)
+        {
+            return _directory.GetData(address);
+        }
 
-        OscMaster() : base(OscMasterConfig.listenPortList) {}
+        // Returns a reference to the master directory instance.
+        public static OscDirectory MasterDirectory {
+            get { return _directory; }
+        }
+
+        static OscDirectory _directory = new OscDirectory(listenPortList);
     }
 }

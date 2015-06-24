@@ -58,7 +58,7 @@ namespace OscJack
             return _dataStore.ContainsKey(address);
         }
 
-        public System.Object[] GetData(string address)
+        public Object[] GetData(string address)
         {
             UpdateState();
             Object[] data;

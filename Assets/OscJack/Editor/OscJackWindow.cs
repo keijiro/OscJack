@@ -41,7 +41,7 @@ namespace OscJack
         {
             EditorGUILayout.BeginVertical();
 
-            foreach (var item in OscMaster.Instance)
+            foreach (var item in OscMaster.MasterDirectory)
             {
                 var data = item.Value;
                 var text = "";
@@ -69,7 +69,7 @@ namespace OscJack
             if (--_countToUpdate > 0) return;
             _countToUpdate = _updateInterval;
 
-            var mcount = OscMaster.Instance.TotalMessageCount;
+            var mcount = OscMaster.MasterDirectory.TotalMessageCount;
             if (mcount != _lastMessageCount) {
                 Repaint();
                 _lastMessageCount = mcount;

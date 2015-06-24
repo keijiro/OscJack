@@ -7,7 +7,7 @@ Setting up
 ----------
 
 1. Import [the unitypackage file][unitypackage].
-2. Set [the listen port list][portlist].
+2. Set [the listening port list][portlist].
 3. There is no step three.
 
 [unitypackage]: https://github.com/keijiro/OscJack/raw/master/OscJack.unitypackage

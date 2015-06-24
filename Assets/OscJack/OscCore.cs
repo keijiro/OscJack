@@ -1,28 +1,52 @@
-﻿using System;
+﻿//
+// OSC Jack - OSC Input Plugin for Unity
+//
+// Copyright (C) 2015 Keijiro Takahashi
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of
+// this software and associated documentation files (the "Software"), to deal in
+// the Software without restriction, including without limitation the rights to
+// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+// the Software, and to permit persons to whom the Software is furnished to do so,
+// subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+using System;
 using System.Collections.Generic;
 
 namespace OscJack
 {
+    // OSC message storage struct
     public struct OscMessage
     {
-        public string path;
+        public string address;
         public object[] data;
 
-        public OscMessage(string path, object[] data)
+        public OscMessage(string address, object[] data)
         {
-            this.path = path;
+            this.address = address;
             this.data = data;
         }
 
         public override string ToString ()
         {
-            var temp = path + ":";
-            foreach (var o in data)
-                temp += o + ":";
-            return temp;
+            var temp = address + ":";
+            for (var i = 0; i < data.Length - 1; i++)
+                temp += data[i] + ",";
+            return temp + data[data.Length];
         }
     }
 
+    // OSC packet parser
     public class OscParser
     {
         #region Public Methods And Properties
@@ -61,9 +85,9 @@ namespace OscJack
 
         void ReadMessage()
         {
-            var path = ReadString();
+            var address = ReadString();
 
-            if (path == "#bundle")
+            if (address == "#bundle")
             {
                 ReadInt64();
 
@@ -84,7 +108,7 @@ namespace OscJack
             }
 
             var types = ReadString();
-            var temp = new OscMessage(path, new object[types.Length - 1]);
+            var temp = new OscMessage(address, new object[types.Length - 1]);
 
             for (var i = 0; i < types.Length - 1; i++)
             {

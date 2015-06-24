@@ -1,145 +1,103 @@
-using UnityEngine;
+//
+// OSC Jack - OSC Input Plugin for Unity
+//
+// Copyright (C) 2015 Keijiro Takahashi
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of
+// this software and associated documentation files (the "Software"), to deal in
+// the Software without restriction, including without limitation the rights to
+// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+// the Software, and to permit persons to whom the Software is furnished to do so,
+// subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace OscJack
 {
-    public class OscDirectory
+    // OSC data directory class
+    // Provides last received data for each address.
+    public class OscDirectory : IEnumerable<KeyValuePair<string, Object[]>>
     {
-        #region Single Pattern
+        #region Public Methods
 
-        static OscDirectory _instance;
+        public OscDirectory(int port) : this(new int[]{port})
+        {
+        }
 
-        public static OscDirectory Instance {
-            get {
-                if (_instance == null)
-                    _instance = new OscDirectory();
-                return _instance;
+        public OscDirectory(int[] portList)
+        {
+            _dataStore = new Dictionary<string, Object[]>();
+            _servers = new OscServer[portList.Length];
+            for (var i = 0; i < portList.Length; i++) {
+                _servers[i] = new OscServer(portList[i]);
+                _servers[i].Start();
             }
+        }
+
+        public int TotalMessageCount {
+            get {
+                UpdateState();
+                return _totalMessageCount;
+            }
+        }
+
+        public bool HasData(string address)
+        {
+            return _dataStore.ContainsKey(address);
+        }
+
+        public System.Object[] GetData(string address)
+        {
+            UpdateState();
+            Object[] data;
+            _dataStore.TryGetValue(address, out data);
+            return data;
         }
 
         #endregion
 
-        #region Public Methods
+        #region Enumerable Interface
 
-        public OscDirectory()
+        public IEnumerator<KeyValuePair<string, Object[]>> GetEnumerator()
         {
-            _server = new OscServer();
-            _dataMap = new Dictionary<string, OscMessage>();
-
-            #if UNITY_EDITOR
-            _messageHistory = new Queue<OscMessage>();
-            #endif
-
-            _server.Start();
+            return _dataStore.GetEnumerator();
         }
 
-        public void StartServer()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            _server.Start();
-        }
-
-        public void TerminateServer()
-        {
-            _server.Close();
-        }
-
-        public System.Object[] GetData(string path)
-        {
-            UpdateIfNeeded();
-            OscMessage message;
-            _dataMap.TryGetValue(path, out message);
-            return message.data;
+            return _dataStore.GetEnumerator();
         }
 
         #endregion
 
         #region Private Objects And Functions
 
-        // Server object and path-to-data map
-        OscServer _server;
-        Dictionary<string, OscMessage> _dataMap;
-
-        // Last update frame number
-        int _lastFrame;
-
-        void UpdateIfNeeded()
-        {
-            if (Application.isPlaying)
-            {
-                var frame = Time.frameCount;
-                if (frame != _lastFrame) {
-                    UpdateState();
-                    _lastFrame = frame;
-                }
-            }
-            else
-            {
-                #if UNITY_EDITOR
-                if (CheckUpdateInterval()) UpdateState();
-                #endif
-            }
-        }
+        Dictionary<string, Object[]> _dataStore;
+        OscServer[] _servers;
+        int _totalMessageCount;
 
         void UpdateState()
         {
-            while (_server.MessageCount > 0)
-            {
-                var message = _server.PopMessage();
-                _dataMap[message.path] = message;
-
-                #if UNITY_EDITOR
-                // Record the message.
-                _totalMessageCount++;
-                _messageHistory.Enqueue(message);
-                #endif
-            }
-
-            #if UNITY_EDITOR
-            // Truncate the history.
-            while (_messageHistory.Count > 8)
-                _messageHistory.Dequeue();
-            #endif
-        }
-
-        #endregion
-
-        #region Editor Support
-
-        #if UNITY_EDITOR
-
-        // Update timer
-        const float _updateInterval = 1.0f / 10;
-        float _lastUpdateTime;
-
-        bool CheckUpdateInterval()
-        {
-            var current = Time.realtimeSinceStartup;
-            if (current - _lastUpdateTime > _updateInterval || current < _lastUpdateTime) {
-                _lastUpdateTime = current;
-                return true;
-            }
-            return false;
-        }
-
-        // Total message count
-        int _totalMessageCount;
-
-        public int TotalMessageCount {
-            get {
-                UpdateIfNeeded();
-                return _totalMessageCount;
+            foreach (var server in _servers) {
+                while (server.MessageCount > 0) {
+                    var message = server.PopMessage();
+                    _dataStore[message.address] = message.data;
+                    _totalMessageCount++;
+                }
             }
         }
-
-        // Message history
-        Queue<OscMessage> _messageHistory;
-
-        public Queue<OscMessage> History {
-            get { return _messageHistory; }
-        }
-
-        #endif
 
         #endregion
     }

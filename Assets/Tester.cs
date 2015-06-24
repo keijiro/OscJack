@@ -5,7 +5,11 @@ public class Tester : MonoBehaviour
 {
     void Update()
     {
-        var data = OscDirectory.Instance.GetData("/audio/loud");
-        if (data != null) Debug.Log(data[0]);
+        var data = OscMaster.Instance.GetData("/audio/loud");
+        if (data != null) {
+            var loud = (float)data[0];
+            transform.localScale = Vector3.one * loud;
+            Debug.Log(loud);
+        }
     }
 }

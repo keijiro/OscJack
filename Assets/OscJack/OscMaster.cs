@@ -43,7 +43,12 @@ namespace OscJack
             return _directory.GetData(address);
         }
 
-        // Returns a reference to the master directory instance.
+		public static void Remove(string address)
+		{
+			_directory.Remove(address);
+		}
+
+		// Returns a reference to the master directory instance.
         public static OscDirectory MasterDirectory {
             get { return _directory; }
         }

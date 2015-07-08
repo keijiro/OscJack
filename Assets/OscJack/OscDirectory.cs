@@ -55,7 +55,8 @@ namespace OscJack
 
         public bool HasData(string address)
         {
-            return _dataStore.ContainsKey(address);
+			UpdateState();
+			return _dataStore.ContainsKey(address);
         }
 
         public Object[] GetData(string address)
@@ -66,7 +67,12 @@ namespace OscJack
             return data;
         }
 
-        #endregion
+		public void Remove(string address) {
+			UpdateState();
+			_dataStore.Remove(address);
+		}
+
+		#endregion
 
         #region Enumerable Interface
 

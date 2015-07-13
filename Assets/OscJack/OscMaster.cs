@@ -43,6 +43,12 @@ namespace OscJack
             return _directory.GetData(address);
         }
 
+        // Clears data at a given address.
+        public static void ClearData(string address)
+        {
+            _directory.ClearData(address);
+        }
+
         // Returns a reference to the master directory instance.
         public static OscDirectory MasterDirectory {
             get { return _directory; }

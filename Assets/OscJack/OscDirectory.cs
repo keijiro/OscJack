@@ -66,6 +66,11 @@ namespace OscJack
             return data;
         }
 
+        public void ClearData(string address)
+        {
+            _dataStore.Remove(address);
+        }
+
         #endregion
 
         #region Enumerable Interface

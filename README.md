@@ -24,6 +24,10 @@ Determines whether any data has arrived to a given address.
 
 Returns a data set which was sent to a given address.
 
+#### static void OscMaster.ClearData (string address)
+
+Clears data at a given address.
+
 OSC Monitor Window
 ------------------
 

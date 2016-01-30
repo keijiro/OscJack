@@ -41,9 +41,13 @@ namespace OscJack
         public override string ToString ()
         {
             var temp = address + ":";
-            for (var i = 0; i < data.Length - 1; i++)
-                temp += data[i] + ",";
-            return temp + data[data.Length];
+            if (data.Length > 0)
+            {
+                for (var i = 0; i < data.Length - 1; i++)
+                    temp += data[i] + ",";
+                temp += data[data.Length - 1];
+            }
+            return temp;
         }
     }
 

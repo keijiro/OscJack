@@ -48,7 +48,9 @@ namespace OscJack
 
                 for (var i = 0; i < data.Length - 1; i++)
                     text += data[i] + ", ";
-                text += data[data.Length - 1];
+
+                if (data.Length > 0)
+                    text += data[data.Length - 1];
 
                 EditorGUILayout.LabelField(item.Key, text);
             }

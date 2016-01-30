@@ -53,7 +53,7 @@ namespace OscJack
         {
             _endPoint = new IPEndPoint(IPAddress.Any, listenPort);
             _udpClient = new UdpClient(_endPoint);
-            _udpClient.Client.ReceiveTimeout = 1000;
+            _udpClient.Client.ReceiveTimeout = 500;
             _osc = new OscParser();
         }
 
@@ -68,19 +68,20 @@ namespace OscJack
         public void Close()
         {
             _udpClient.Close();
+            _udpClient = null;
         }
 
         void ServerLoop()
         {
-            try {
-                while (true) {
+            while (_udpClient != null)
+            {
+                try {
                     var data = _udpClient.Receive(ref _endPoint);
                     lock (_osc) _osc.FeedData(data);
                 }
-            }
-            catch (SocketException)
-            {
-                // Shutdown: nothing to do here.
+                catch (SocketException) {
+                    // It might exited by a timeout, so do nothing.
+                }
             }
         }
     }

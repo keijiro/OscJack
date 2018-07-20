@@ -1,7 +1,17 @@
+#if UNITY_EDITOR
+#define OSC_SERVER_LIST
+#endif
+
 using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+
+#if OSC_SERVER_LIST
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+[assembly:System.Runtime.CompilerServices.InternalsVisibleTo("jp.keijiro.osc-jack.Editor")] 
+#endif
 
 namespace OscJack2
 {
@@ -9,7 +19,7 @@ namespace OscJack2
     {
         #region Public Properties And Methods
 
-        public OscMessageDispatcher messageDispatcher {
+        public OscMessageDispatcher MessageDispatcher {
             get { return _dispatcher; }
         }
 
@@ -24,6 +34,10 @@ namespace OscJack2
             _socket.ReceiveTimeout = 100;
 
             _socket.Bind(new IPEndPoint(IPAddress.Any, listenPort));
+
+            #if OSC_SERVER_LIST
+            _servers.Add(this);
+            #endif
         }
 
         public void Start()
@@ -39,6 +53,10 @@ namespace OscJack2
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+
+            #if OSC_SERVER_LIST
+            if (_servers != null) _servers.Remove(this);
+            #endif
         }
 
         #endregion
@@ -52,8 +70,18 @@ namespace OscJack2
 
             if (disposing)
             {
-                _socket.Close();
-                _thread.Join();
+                if (_socket != null)
+                {
+                    _socket.Close();
+                    _socket = null;
+                }
+
+                if (_thread != null)
+                {
+                    _thread.Join();
+                    _thread = null;
+                }
+
                 _dispatcher = null;
             }
         }
@@ -62,6 +90,27 @@ namespace OscJack2
         {
             Dispose(false);
         }
+
+        #endregion
+
+        #region For editor functionalities
+
+        #if OSC_SERVER_LIST
+
+        static List<OscServer> _servers = new List<OscServer>(8);
+        static ReadOnlyCollection<OscServer> _serversReadOnly;
+
+        internal static ReadOnlyCollection<OscServer> ServerList
+        {
+            get
+            {
+                if (_serversReadOnly == null)
+                    _serversReadOnly = new ReadOnlyCollection<OscServer>(_servers);
+                return _serversReadOnly;
+            }
+        }
+
+        #endif
 
         #endregion
 

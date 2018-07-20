@@ -7,11 +7,12 @@ public class Test : MonoBehaviour
     [SerializeField] int _port = 9000;
 
     OscServer _server;
+    float _value = 1;
 
     void Start()
     {
         _server = new OscServer(_port);
-        _server.messageDispatcher.AddCallback(_address, MessageCallback);
+        _server.MessageDispatcher.AddCallback(_address, MessageCallback);
         _server.Start();
     }
 
@@ -20,8 +21,13 @@ public class Test : MonoBehaviour
         _server.Dispose();
     }
 
-    void MessageCallback(OscDataHandle data)
+    void Update()
     {
-        Debug.Log(data.GetValueAsString(0));
+        transform.localScale = Vector3.one * _value;
+    }
+
+    void MessageCallback(string address, OscDataHandle data)
+    {
+        _value = data.GetValueAsFloat(0);
     }
 }

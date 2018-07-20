@@ -7,7 +7,7 @@ namespace OscJack2
     {
         #region Callback delegate definition
 
-        public delegate void MessageCallback(OscDataHandle data);
+        public delegate void MessageCallback(string address, OscDataHandle data);
 
         #endregion
 
@@ -45,8 +45,14 @@ namespace OscJack2
             lock (_delegatesLock)
             {
                 MessageCallback callback;
+
+                // Address-specified callback
                 if (_callbackMap.TryGetValue(address, out callback))
-                    callback(data);
+                    callback(address, data);
+
+                // Monitor callback
+                if (_callbackMap.TryGetValue(string.Empty, out callback))
+                    callback(address, data);
             }
         }
 

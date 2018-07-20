@@ -1,18 +1,18 @@
 ﻿using UnityEngine;
 using OscJack2;
 
-public class Test : MonoBehaviour
+public class ReceiverTest : MonoBehaviour
 {
-    [SerializeField] string _address = "/test";
     [SerializeField] int _port = 9000;
+    [SerializeField] string _oscAddress = "/test";
 
     OscServer _server;
-    float _value = 1;
+    Vector3 _data;
 
     void Start()
     {
         _server = new OscServer(_port);
-        _server.MessageDispatcher.AddCallback(_address, MessageCallback);
+        _server.MessageDispatcher.AddCallback(_oscAddress, MessageCallback);
         _server.Start();
     }
 
@@ -23,11 +23,12 @@ public class Test : MonoBehaviour
 
     void Update()
     {
-        transform.localScale = Vector3.one * _value;
+        transform.localPosition = new Vector3(_data.y, _data.z, 0);
+        transform.localScale = Vector3.one * _data.x;
     }
 
     void MessageCallback(string address, OscDataHandle data)
     {
-        _value = data.GetValueAsFloat(0);
+        _data = data.GetValuesAsVector3();
     }
 }

@@ -125,7 +125,7 @@ namespace OscJack2
         void ServerLoop()
         {
             var parser = new OscPacketParser(_dispatcher);
-            var buffer = new byte[65536];
+            var buffer = new byte[4096];
 
             while (!_disposed)
             {

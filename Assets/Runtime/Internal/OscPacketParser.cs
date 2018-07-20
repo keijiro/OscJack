@@ -31,7 +31,7 @@ namespace OscJack2
 
             // OSC address
             var address = OscDataTypes.ReadString(buffer, offset);
-            offset += OscDataTypes.Align4(address.Length);
+            offset += OscDataTypes.Align4(address.Length + 1);
 
             if (address == "#bundle")
             {

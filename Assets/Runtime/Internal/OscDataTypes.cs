@@ -14,7 +14,7 @@ namespace OscJack2
 
         public static int Align4(int length)
         {
-            return (length + 4) & ~3;
+            return (length + 3) & ~3;
         }
 
         public static int ReadInt(Byte[] buffer, int offset)
@@ -38,7 +38,7 @@ namespace OscJack2
         {
             var length = 0;
             while (buffer[offset + length] != 0) length++;
-            return Align4(offset + length) - offset;
+            return Align4(offset + length + 1) - offset;
         }
 
         public static string ReadString(Byte[] buffer, int offset)

@@ -12,6 +12,9 @@ namespace OscJack2
         {
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
+            if (destination == "255.255.255.255")
+                _socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, true);
+
             var dest = new IPEndPoint(IPAddress.Parse(destination), port);
             _socket.Connect(dest);
         }

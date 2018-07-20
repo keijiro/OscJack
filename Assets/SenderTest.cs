@@ -11,6 +11,9 @@ class SenderTest : MonoBehaviour
 
     void Start()
     {
+    #if UNITY_IOS
+        Application.targetFrameRate = 60;
+    #endif
         _client = new OscClient(_ipAddress, _port);
     }
 

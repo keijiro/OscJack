@@ -35,18 +35,12 @@ namespace OscJack2
 
             _socket.Bind(new IPEndPoint(IPAddress.Any, listenPort));
 
+            _thread = new Thread(ServerLoop);
+            _thread.Start();
+
             #if OSC_SERVER_LIST
             _servers.Add(this);
             #endif
-        }
-
-        public void Start()
-        {
-            if (_thread == null && !_disposed)
-            {
-                _thread = new Thread(ServerLoop);
-                _thread.Start();
-            }
         }
 
         public void Dispose()
@@ -145,7 +139,7 @@ namespace OscJack2
                 }
                 catch (Exception e)
                 {
-                    if (!_disposed) UnityEngine.Debug.Log(e);
+                    if (!_disposed) System.Console.WriteLine(e);
                     break;
                 }
             }

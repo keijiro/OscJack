@@ -1,0 +1,226 @@
+using UnityEngine;
+using UnityEngine.Events;
+using System.Collections.Generic;
+
+namespace OscJack2
+{
+    public sealed class OscReceiver : MonoBehaviour
+    {
+        #region Receiver data type selector
+
+        public enum DataType
+        {
+            None, Int, Float,
+            Vector2, Vector3, Vector4,
+            Vector2Int, Vector3Int,
+            String
+        }
+
+        #endregion
+
+        #region Receiver event classes
+
+        [System.Serializable] class IntEvent        : UnityEvent<int>        {}
+        [System.Serializable] class FloatEvent      : UnityEvent<float>      {}
+        [System.Serializable] class Vector2Event    : UnityEvent<Vector2>    {}
+        [System.Serializable] class Vector3Event    : UnityEvent<Vector3>    {}
+        [System.Serializable] class Vector4Event    : UnityEvent<Vector4>    {}
+        [System.Serializable] class Vector2IntEvent : UnityEvent<Vector2Int> {}
+        [System.Serializable] class Vector3IntEvent : UnityEvent<Vector3Int> {}
+        [System.Serializable] class StringEvent     : UnityEvent<string>     {}
+
+        #endregion
+
+        #region Editable attributes
+
+        [SerializeField] int _udpPort = 9000;
+        [SerializeField] string _oscAddress = "/bang";
+        [SerializeField] DataType _dataType;
+
+        [SerializeField] UnityEvent _event;
+        [SerializeField] IntEvent _intEvent;
+        [SerializeField] FloatEvent _floatEvent;
+        [SerializeField] Vector2Event _vector2Event;
+        [SerializeField] Vector3Event _vector3Event;
+        [SerializeField] Vector4Event _vector4Event;
+        [SerializeField] Vector2IntEvent _vector2IntEvent;
+        [SerializeField] Vector3IntEvent _vector3IntEvent;
+        [SerializeField] StringEvent _stringEvent;
+
+        #endregion
+
+        #region Message queue
+
+        int _bangCount;
+        Queue<int> _intQueue;
+        Queue<float> _floatQueue;
+        Queue<string> _stringQueue;
+
+        #endregion
+
+        #region MonoBehaviour implementation
+
+        void OnEnable()
+        {
+            var server = OscMaster.GetServer(_udpPort);
+            server.MessageDispatcher.AddCallback(_oscAddress, OnDataReceive);
+
+            switch (_dataType)
+            {
+                case DataType.None:
+                case DataType.Int:
+                case DataType.Vector2Int:
+                case DataType.Vector3Int:
+                    _intQueue = new Queue<int>(4);
+                    break;
+
+                case DataType.Float:
+                case DataType.Vector2:
+                case DataType.Vector3:
+                case DataType.Vector4:
+                    _floatQueue = new Queue<float>(4);
+                    break;
+
+                case DataType.String:
+                    _stringQueue = new Queue<string>();
+                    break;
+            }
+        }
+
+        void OnDisable()
+        {
+            var server = OscMaster.GetServer(_udpPort);
+            server.MessageDispatcher.RemoveCallback(_oscAddress, OnDataReceive);
+        }
+
+        void Update()
+        {
+            switch (_dataType)
+            {
+                case DataType.None:
+                    while (_bangCount > 0)
+                    {
+                        _event.Invoke();
+                        _bangCount--;
+                    }
+                    break;
+
+                case DataType.Int:
+                    while (_intQueue.Count > 0)
+                        _intEvent.Invoke(_intQueue.Dequeue());
+                    break;
+
+                case DataType.Float:
+                    while (_floatQueue.Count > 0)
+                        _floatEvent.Invoke(_floatQueue.Dequeue());
+                    break;
+
+                case DataType.Vector2:
+                    while (_floatQueue.Count > 0)
+                        _vector2Event.Invoke(new Vector2(
+                            _floatQueue.Dequeue(),
+                            _floatQueue.Dequeue()
+                        ));
+                    break;
+
+                case DataType.Vector3:
+                    while (_floatQueue.Count > 0)
+                        _vector3Event.Invoke(new Vector3(
+                            _floatQueue.Dequeue(),
+                            _floatQueue.Dequeue(),
+                            _floatQueue.Dequeue()
+                        ));
+                    break;
+
+                case DataType.Vector4:
+                    while (_floatQueue.Count > 0)
+                        _vector3Event.Invoke(new Vector4(
+                            _floatQueue.Dequeue(),
+                            _floatQueue.Dequeue(),
+                            _floatQueue.Dequeue(),
+                            _floatQueue.Dequeue()
+                        ));
+                    break;
+
+                case DataType.Vector2Int:
+                    while (_intQueue.Count > 0)
+                        _vector2IntEvent.Invoke(new Vector2Int(
+                            _intQueue.Dequeue(),
+                            _intQueue.Dequeue()
+                        ));
+                    break;
+
+                case DataType.Vector3Int:
+                    while (_intQueue.Count > 0)
+                        _vector3IntEvent.Invoke(new Vector3Int(
+                            _intQueue.Dequeue(),
+                            _intQueue.Dequeue(),
+                            _intQueue.Dequeue()
+                        ));
+                    break;
+
+                case DataType.String:
+                    while (_stringQueue.Count > 0)
+                        _stringEvent.Invoke(_stringQueue.Dequeue());
+                    break;
+            }
+        }
+
+        #endregion
+
+        #region OSC event callback
+
+        void OnDataReceive(string address, OscDataHandle data)
+        {
+            switch (_dataType)
+            {
+                case DataType.None:
+                    _bangCount++;
+                    break;
+
+                case DataType.Int:
+                    _intQueue.Enqueue(data.GetValueAsInt(0));
+                    break;
+
+                case DataType.Float:
+                    _floatQueue.Enqueue(data.GetValueAsFloat(0));
+                    break;
+
+                case DataType.Vector2:
+                    _floatQueue.Enqueue(data.GetValueAsFloat(0));
+                    _floatQueue.Enqueue(data.GetValueAsFloat(1));
+                    break;
+
+                case DataType.Vector3:
+                    _floatQueue.Enqueue(data.GetValueAsFloat(0));
+                    _floatQueue.Enqueue(data.GetValueAsFloat(1));
+                    _floatQueue.Enqueue(data.GetValueAsFloat(2));
+                    break;
+
+                case DataType.Vector4:
+                    _floatQueue.Enqueue(data.GetValueAsFloat(0));
+                    _floatQueue.Enqueue(data.GetValueAsFloat(1));
+                    _floatQueue.Enqueue(data.GetValueAsFloat(2));
+                    _floatQueue.Enqueue(data.GetValueAsFloat(3));
+                    break;
+
+                case DataType.Vector2Int:
+                    _intQueue.Enqueue(data.GetValueAsInt(0));
+                    _intQueue.Enqueue(data.GetValueAsInt(1));
+                    break;
+
+                case DataType.Vector3Int:
+                    _intQueue.Enqueue(data.GetValueAsInt(0));
+                    _intQueue.Enqueue(data.GetValueAsInt(1));
+                    _intQueue.Enqueue(data.GetValueAsInt(2));
+                    break;
+
+                case DataType.String:
+                    _stringQueue.Enqueue(data.GetValueAsString(0));
+                    break;
+            }
+        }
+
+        #endregion
+    }
+}

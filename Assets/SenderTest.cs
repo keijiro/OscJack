@@ -23,6 +23,6 @@ class SenderTest : MonoBehaviour
         var x = Mathf.Sin(t * 1.1f);
         var y = Mathf.Sin(t * 1.9f);
         var s = Mathf.Sin(t * 2.3f) * 0.4f + 1;
-        _client.Send(_oscAddress, new Vector3(s, x, y));
+        _client.Send(_oscAddress, s, x, y);
     }
 }

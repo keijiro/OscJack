@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace OscJack2
+namespace OscJack
 {
     public static class OscMaster
     {

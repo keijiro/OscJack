@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace OscJack2
+namespace OscJack
 {
     //
     // Data handle class that provides offset values to each data element

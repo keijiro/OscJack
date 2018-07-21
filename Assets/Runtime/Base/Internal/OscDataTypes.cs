@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace OscJack2
+namespace OscJack
 {
     internal static class OscDataTypes
     {

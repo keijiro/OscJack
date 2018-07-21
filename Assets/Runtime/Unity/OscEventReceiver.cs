@@ -2,8 +2,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using System.Collections.Generic;
 
-namespace OscJack2
+namespace OscJack
 {
+    [AddComponentMenu("OSC/Event Receiver")]
     public sealed class OscEventReceiver : MonoBehaviour
     {
         #region Receiver data types

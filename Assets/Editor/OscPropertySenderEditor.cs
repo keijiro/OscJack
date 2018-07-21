@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OscJack2
+namespace OscJack
 {
     [CanEditMultipleObjects, CustomEditor(typeof(OscPropertySender))]
     class OscPropertySenderEditor : Editor

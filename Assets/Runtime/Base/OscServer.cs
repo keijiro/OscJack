@@ -13,7 +13,7 @@ using System.Collections.ObjectModel;
 [assembly:System.Runtime.CompilerServices.InternalsVisibleTo("jp.keijiro.osc-jack.Editor")] 
 #endif
 
-namespace OscJack2
+namespace OscJack
 {
     public sealed class OscServer : IDisposable
     {

@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 
-namespace OscJack2
+namespace OscJack
 {
     public sealed class OscClient : IDisposable
     {

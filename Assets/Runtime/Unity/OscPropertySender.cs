@@ -2,8 +2,9 @@ using UnityEngine;
 using System;
 using System.Reflection;
 
-namespace OscJack2
+namespace OscJack
 {
+    [AddComponentMenu("OSC/Property Sender")]
     public sealed class OscPropertySender : MonoBehaviour
     {
         #region Editable fields

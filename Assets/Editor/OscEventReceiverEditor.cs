@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEditor;
-using DataType = OscJack2.OscEventReceiver.DataType;
+using DataType = OscJack.OscEventReceiver.DataType;
 
-namespace OscJack2
+namespace OscJack
 {
     [CanEditMultipleObjects, CustomEditor(typeof(OscEventReceiver))]
     class OscEventReceiverEditor : Editor

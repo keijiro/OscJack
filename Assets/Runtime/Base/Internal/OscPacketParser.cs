@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace OscJack2
+namespace OscJack
 {
     internal sealed class OscPacketParser
     {

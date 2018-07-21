@@ -3,7 +3,7 @@ using UnityEditor;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OscJack2
+namespace OscJack
 {
     class OscMonitorWindow : EditorWindow
     {

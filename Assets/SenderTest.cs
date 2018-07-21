@@ -1,5 +1,5 @@
 using UnityEngine;
-using OscJack2;
+using OscJack;
 
 class SenderTest : MonoBehaviour
 {

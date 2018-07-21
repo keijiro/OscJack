@@ -1,6 +1,6 @@
 using System;
 
-namespace OscJack2
+namespace OscJack
 {
     internal sealed class OscPacketEncoder
     {

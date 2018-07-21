@@ -204,44 +204,44 @@ namespace OscJack
                     break;
 
                 case DataType.Int:
-                    _intQueue.Enqueue(data.GetValueAsInt(0));
+                    _intQueue.Enqueue(data.GetElementAsInt(0));
                     break;
 
                 case DataType.Float:
-                    _floatQueue.Enqueue(data.GetValueAsFloat(0));
+                    _floatQueue.Enqueue(data.GetElementAsFloat(0));
                     break;
 
                 case DataType.String:
-                    _stringQueue.Enqueue(data.GetValueAsString(0));
+                    _stringQueue.Enqueue(data.GetElementAsString(0));
                     break;
 
                 case DataType.Vector2:
-                    _floatQueue.Enqueue(data.GetValueAsFloat(0));
-                    _floatQueue.Enqueue(data.GetValueAsFloat(1));
+                    _floatQueue.Enqueue(data.GetElementAsFloat(0));
+                    _floatQueue.Enqueue(data.GetElementAsFloat(1));
                     break;
 
                 case DataType.Vector3:
-                    _floatQueue.Enqueue(data.GetValueAsFloat(0));
-                    _floatQueue.Enqueue(data.GetValueAsFloat(1));
-                    _floatQueue.Enqueue(data.GetValueAsFloat(2));
+                    _floatQueue.Enqueue(data.GetElementAsFloat(0));
+                    _floatQueue.Enqueue(data.GetElementAsFloat(1));
+                    _floatQueue.Enqueue(data.GetElementAsFloat(2));
                     break;
 
                 case DataType.Vector4:
-                    _floatQueue.Enqueue(data.GetValueAsFloat(0));
-                    _floatQueue.Enqueue(data.GetValueAsFloat(1));
-                    _floatQueue.Enqueue(data.GetValueAsFloat(2));
-                    _floatQueue.Enqueue(data.GetValueAsFloat(3));
+                    _floatQueue.Enqueue(data.GetElementAsFloat(0));
+                    _floatQueue.Enqueue(data.GetElementAsFloat(1));
+                    _floatQueue.Enqueue(data.GetElementAsFloat(2));
+                    _floatQueue.Enqueue(data.GetElementAsFloat(3));
                     break;
 
                 case DataType.Vector2Int:
-                    _intQueue.Enqueue(data.GetValueAsInt(0));
-                    _intQueue.Enqueue(data.GetValueAsInt(1));
+                    _intQueue.Enqueue(data.GetElementAsInt(0));
+                    _intQueue.Enqueue(data.GetElementAsInt(1));
                     break;
 
                 case DataType.Vector3Int:
-                    _intQueue.Enqueue(data.GetValueAsInt(0));
-                    _intQueue.Enqueue(data.GetValueAsInt(1));
-                    _intQueue.Enqueue(data.GetValueAsInt(2));
+                    _intQueue.Enqueue(data.GetElementAsInt(0));
+                    _intQueue.Enqueue(data.GetElementAsInt(1));
+                    _intQueue.Enqueue(data.GetElementAsInt(2));
                     break;
             }
         }

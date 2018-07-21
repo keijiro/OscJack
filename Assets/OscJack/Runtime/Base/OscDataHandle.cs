@@ -19,7 +19,7 @@ namespace OscJack
             return _typeTags.Count;
         }
 
-        public int GetValueAsInt(int index)
+        public int GetElementAsInt(int index)
         {
             if (index >= _typeTags.Count) return 0;
             var tag = _typeTags[index];
@@ -29,7 +29,7 @@ namespace OscJack
             return 0;
         }
 
-        public float GetValueAsFloat(int index)
+        public float GetElementAsFloat(int index)
         {
             if (index >= _typeTags.Count) return 0;
             var tag = _typeTags[index];
@@ -39,7 +39,7 @@ namespace OscJack
             return 0;
         }
 
-        public string GetValueAsString(int index)
+        public string GetElementAsString(int index)
         {
             if (index >= _typeTags.Count) return "";
             var tag = _typeTags[index];

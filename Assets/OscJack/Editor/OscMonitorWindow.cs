@@ -37,7 +37,7 @@ namespace OscJack
             var ecount = data.GetElementCount();
             for (var i = 0; i < ecount; i++)
             {
-                _stringBuilder.Append(data.GetValueAsString(i));
+                _stringBuilder.Append(data.GetElementAsString(i));
                 if (i < ecount - 1) _stringBuilder.Append(", ");
             }
 

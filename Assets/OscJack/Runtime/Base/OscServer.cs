@@ -142,7 +142,11 @@ namespace OscJack
                 }
                 catch (Exception e)
                 {
+                #if UNITY_EDITOR || UNITY_STANDALONE
+                    if (!_disposed) UnityEngine.Debug.Log(e);
+                #else
                     if (!_disposed) System.Console.WriteLine(e);
+                #endif
                     break;
                 }
             }

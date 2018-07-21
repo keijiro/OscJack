@@ -1,3 +1,6 @@
+// OSC Jack - Open Sound Control plugin for Unity
+// https://github.com/keijiro/OscJack
+
 #if UNITY_EDITOR
 #define OSC_SERVER_LIST
 #endif

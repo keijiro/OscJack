@@ -1,3 +1,6 @@
+// OSC Jack - Open Sound Control plugin for Unity
+// https://github.com/keijiro/OscJack
+
 using UnityEngine;
 using System;
 using System.Reflection;

@@ -1,6 +1,8 @@
 OSC Jack
 ========
 
+![gif](https://i.imgur.com/mjp2o3t.gif)
+
 **OSC Jack** is a lightweight implementation of [OSC] (Open Sound Control)
 server and client that is written in C#. It mainly aims to provide basic OSC
 support to [Unity].

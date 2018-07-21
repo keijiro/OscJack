@@ -61,7 +61,7 @@ are not directly related to component properties or events.
 `OscClient` provides basic functionalities to send OSC messages to a specific
 UDP port of a host. It supports `int`, `float` and `string` types, and it's
 capable of sending up to four elements within a single message. It implements
-`IDispose`, so it can be manually terminated by calling the `Dispose` method
+`IDisposable`, so it can be manually terminated by calling the `Dispose` method
 (or left it until automatically being finalized).
 
 ```csharp
@@ -84,7 +84,7 @@ client.Dispose();
 
 `OscServer` provides basic functionalities to receive OSC messages that are
 sent to a specific UDP port of the host. It starts receiving messages when a
-server instance is created, and terminates when disposed (via the `IDispose`
+server instance is created, and terminates when disposed (via the `IDisposable`
 interface).
 
 You can add delegates to `MessageDispatcher` to receive messages sent to a

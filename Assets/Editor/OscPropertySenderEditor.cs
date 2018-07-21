@@ -7,8 +7,8 @@ using System.Linq;
 
 namespace OscJack2
 {
-    [CustomEditor(typeof(OscSender))]
-    class OscSenderEditor : Editor
+    [CustomEditor(typeof(OscPropertySender))]
+    class OscPropertySenderEditor : Editor
     {
         #region Editable properties
 

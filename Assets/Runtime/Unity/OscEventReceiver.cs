@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace OscJack2
 {
-    public sealed class OscReceiver : MonoBehaviour
+    public sealed class OscEventReceiver : MonoBehaviour
     {
         #region Receiver data type selector
 

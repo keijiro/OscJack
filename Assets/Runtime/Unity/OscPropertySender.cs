@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace OscJack2
 {
-    public sealed class OscSender : MonoBehaviour
+    public sealed class OscPropertySender : MonoBehaviour
     {
         #region Editable attributes
 

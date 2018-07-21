@@ -3,8 +3,8 @@ using UnityEditor;
 
 namespace OscJack2
 {
-    [CanEditMultipleObjects, CustomEditor(typeof(OscReceiver))]
-    class OscReceiverEditor : Editor
+    [CanEditMultipleObjects, CustomEditor(typeof(OscEventReceiver))]
+    class OscEventReceiverEditor : Editor
     {
         SerializedProperty _udpPort;
         SerializedProperty _oscAddress;
@@ -53,17 +53,17 @@ namespace OscJack2
 
             if (!_dataType.hasMultipleDifferentValues)
             {
-                switch ((OscReceiver.DataType)_dataType.enumValueIndex)
+                switch ((OscEventReceiver.DataType)_dataType.enumValueIndex)
                 {
-                    case OscReceiver.DataType.None:       EditorGUILayout.PropertyField(_event);           break;
-                    case OscReceiver.DataType.Int:        EditorGUILayout.PropertyField(_intEvent);        break;
-                    case OscReceiver.DataType.Float:      EditorGUILayout.PropertyField(_floatEvent);      break;
-                    case OscReceiver.DataType.Vector2:    EditorGUILayout.PropertyField(_vector2Event);    break;
-                    case OscReceiver.DataType.Vector3:    EditorGUILayout.PropertyField(_vector3Event);    break;
-                    case OscReceiver.DataType.Vector4:    EditorGUILayout.PropertyField(_vector4Event);    break;
-                    case OscReceiver.DataType.Vector2Int: EditorGUILayout.PropertyField(_vector2IntEvent); break;
-                    case OscReceiver.DataType.Vector3Int: EditorGUILayout.PropertyField(_vector3IntEvent); break;
-                    case OscReceiver.DataType.String:     EditorGUILayout.PropertyField(_stringEvent);     break;
+                    case OscEventReceiver.DataType.None:       EditorGUILayout.PropertyField(_event);           break;
+                    case OscEventReceiver.DataType.Int:        EditorGUILayout.PropertyField(_intEvent);        break;
+                    case OscEventReceiver.DataType.Float:      EditorGUILayout.PropertyField(_floatEvent);      break;
+                    case OscEventReceiver.DataType.Vector2:    EditorGUILayout.PropertyField(_vector2Event);    break;
+                    case OscEventReceiver.DataType.Vector3:    EditorGUILayout.PropertyField(_vector3Event);    break;
+                    case OscEventReceiver.DataType.Vector4:    EditorGUILayout.PropertyField(_vector4Event);    break;
+                    case OscEventReceiver.DataType.Vector2Int: EditorGUILayout.PropertyField(_vector2IntEvent); break;
+                    case OscEventReceiver.DataType.Vector3Int: EditorGUILayout.PropertyField(_vector3IntEvent); break;
+                    case OscEventReceiver.DataType.String:     EditorGUILayout.PropertyField(_stringEvent);     break;
                 }
             }
 

@@ -6,35 +6,34 @@ namespace OscJack2
 {
     public sealed class OscEventReceiver : MonoBehaviour
     {
-        #region Receiver data type selector
+        #region Receiver data types
 
         public enum DataType
         {
-            None, Int, Float,
+            None, Int, Float, String,
             Vector2, Vector3, Vector4,
-            Vector2Int, Vector3Int,
-            String
+            Vector2Int, Vector3Int
         }
 
         #endregion
 
         #region Receiver event classes
 
-        [System.Serializable] class IntEvent        : UnityEvent<int>        {}
-        [System.Serializable] class FloatEvent      : UnityEvent<float>      {}
-        [System.Serializable] class Vector2Event    : UnityEvent<Vector2>    {}
-        [System.Serializable] class Vector3Event    : UnityEvent<Vector3>    {}
-        [System.Serializable] class Vector4Event    : UnityEvent<Vector4>    {}
+        [System.Serializable] class IntEvent        : UnityEvent<int> {}
+        [System.Serializable] class FloatEvent      : UnityEvent<float> {}
+        [System.Serializable] class StringEvent     : UnityEvent<string> {}
+        [System.Serializable] class Vector2Event    : UnityEvent<Vector2> {}
+        [System.Serializable] class Vector3Event    : UnityEvent<Vector3> {}
+        [System.Serializable] class Vector4Event    : UnityEvent<Vector4> {}
         [System.Serializable] class Vector2IntEvent : UnityEvent<Vector2Int> {}
         [System.Serializable] class Vector3IntEvent : UnityEvent<Vector3Int> {}
-        [System.Serializable] class StringEvent     : UnityEvent<string>     {}
 
         #endregion
 
-        #region Editable attributes
+        #region Editable fields
 
         [SerializeField] int _udpPort = 9000;
-        [SerializeField] string _oscAddress = "/bang";
+        [SerializeField] string _oscAddress = "/unity";
         [SerializeField] DataType _dataType;
 
         [SerializeField] UnityEvent _event;
@@ -49,8 +48,13 @@ namespace OscJack2
 
         #endregion
 
-        #region Message queue
+        #region Internal members
 
+        // Used to store values on initialization
+        int _currentPort;
+        string _currentAddress;
+
+        // Incoming data queues
         int _bangCount;
         Queue<int> _intQueue;
         Queue<float> _floatQueue;
@@ -62,35 +66,56 @@ namespace OscJack2
 
         void OnEnable()
         {
+            if (string.IsNullOrEmpty(_oscAddress))
+            {
+                _currentAddress = null;
+                return;
+            }
+
             var server = OscMaster.GetServer(_udpPort);
             server.MessageDispatcher.AddCallback(_oscAddress, OnDataReceive);
 
+            _currentPort = _udpPort;
+            _currentAddress = _oscAddress;
+
             switch (_dataType)
             {
-                case DataType.None:
                 case DataType.Int:
                 case DataType.Vector2Int:
                 case DataType.Vector3Int:
-                    _intQueue = new Queue<int>(4);
+                    if (_intQueue == null) _intQueue = new Queue<int>(4);
                     break;
 
                 case DataType.Float:
                 case DataType.Vector2:
                 case DataType.Vector3:
                 case DataType.Vector4:
-                    _floatQueue = new Queue<float>(4);
+                    if (_floatQueue == null) _floatQueue = new Queue<float>(4);
                     break;
 
                 case DataType.String:
-                    _stringQueue = new Queue<string>();
+                    if (_stringQueue == null) _stringQueue = new Queue<string>();
                     break;
             }
         }
 
         void OnDisable()
         {
-            var server = OscMaster.GetServer(_udpPort);
-            server.MessageDispatcher.RemoveCallback(_oscAddress, OnDataReceive);
+            if (string.IsNullOrEmpty(_currentAddress)) return;
+
+            var server = OscMaster.GetServer(_currentPort);
+            server.MessageDispatcher.RemoveCallback(_currentAddress, OnDataReceive);
+
+            _currentAddress = null;
+        }
+
+        void OnValidate()
+        {
+            if (Application.isPlaying)
+            {
+                OnDisable();
+                OnEnable();
+            }
         }
 
         void Update()
@@ -98,11 +123,7 @@ namespace OscJack2
             switch (_dataType)
             {
                 case DataType.None:
-                    while (_bangCount > 0)
-                    {
-                        _event.Invoke();
-                        _bangCount--;
-                    }
+                    while (_bangCount-- > 0) _event.Invoke();
                     break;
 
                 case DataType.Int:
@@ -113,6 +134,11 @@ namespace OscJack2
                 case DataType.Float:
                     while (_floatQueue.Count > 0)
                         _floatEvent.Invoke(_floatQueue.Dequeue());
+                    break;
+
+                case DataType.String:
+                    while (_stringQueue.Count > 0)
+                        _stringEvent.Invoke(_stringQueue.Dequeue());
                     break;
 
                 case DataType.Vector2:
@@ -158,11 +184,6 @@ namespace OscJack2
                             _intQueue.Dequeue()
                         ));
                     break;
-
-                case DataType.String:
-                    while (_stringQueue.Count > 0)
-                        _stringEvent.Invoke(_stringQueue.Dequeue());
-                    break;
             }
         }
 
@@ -184,6 +205,10 @@ namespace OscJack2
 
                 case DataType.Float:
                     _floatQueue.Enqueue(data.GetValueAsFloat(0));
+                    break;
+
+                case DataType.String:
+                    _stringQueue.Enqueue(data.GetValueAsString(0));
                     break;
 
                 case DataType.Vector2:
@@ -213,10 +238,6 @@ namespace OscJack2
                     _intQueue.Enqueue(data.GetValueAsInt(0));
                     _intQueue.Enqueue(data.GetValueAsInt(1));
                     _intQueue.Enqueue(data.GetValueAsInt(2));
-                    break;
-
-                case DataType.String:
-                    _stringQueue.Enqueue(data.GetValueAsString(0));
                     break;
             }
         }

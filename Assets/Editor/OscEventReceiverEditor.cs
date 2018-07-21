@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+using DataType = OscJack2.OscEventReceiver.DataType;
 
 namespace OscJack2
 {
@@ -13,12 +14,12 @@ namespace OscJack2
         SerializedProperty _event;
         SerializedProperty _intEvent;
         SerializedProperty _floatEvent;
+        SerializedProperty _stringEvent;
         SerializedProperty _vector2Event;
         SerializedProperty _vector3Event;
         SerializedProperty _vector4Event;
         SerializedProperty _vector2IntEvent;
         SerializedProperty _vector3IntEvent;
-        SerializedProperty _stringEvent;
 
         static class Labels
         {
@@ -35,35 +36,35 @@ namespace OscJack2
             _event           = serializedObject.FindProperty("_event");
             _intEvent        = serializedObject.FindProperty("_intEvent");
             _floatEvent      = serializedObject.FindProperty("_floatEvent");
+            _stringEvent     = serializedObject.FindProperty("_stringEvent");
             _vector2Event    = serializedObject.FindProperty("_vector2Event");
             _vector3Event    = serializedObject.FindProperty("_vector3Event");
             _vector4Event    = serializedObject.FindProperty("_vector4Event");
             _vector2IntEvent = serializedObject.FindProperty("_vector2IntEvent");
             _vector3IntEvent = serializedObject.FindProperty("_vector3IntEvent");
-            _stringEvent     = serializedObject.FindProperty("_stringEvent");
         }
 
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
 
-            EditorGUILayout.PropertyField(_udpPort, Labels.UDPPortNumber);
-            EditorGUILayout.PropertyField(_oscAddress, Labels.OSCAddress);
+            EditorGUILayout.DelayedIntField(_udpPort, Labels.UDPPortNumber);
+            EditorGUILayout.DelayedTextField(_oscAddress, Labels.OSCAddress);
             EditorGUILayout.PropertyField(_dataType);
 
             if (!_dataType.hasMultipleDifferentValues)
             {
-                switch ((OscEventReceiver.DataType)_dataType.enumValueIndex)
+                switch ((DataType)_dataType.enumValueIndex)
                 {
-                    case OscEventReceiver.DataType.None:       EditorGUILayout.PropertyField(_event);           break;
-                    case OscEventReceiver.DataType.Int:        EditorGUILayout.PropertyField(_intEvent);        break;
-                    case OscEventReceiver.DataType.Float:      EditorGUILayout.PropertyField(_floatEvent);      break;
-                    case OscEventReceiver.DataType.Vector2:    EditorGUILayout.PropertyField(_vector2Event);    break;
-                    case OscEventReceiver.DataType.Vector3:    EditorGUILayout.PropertyField(_vector3Event);    break;
-                    case OscEventReceiver.DataType.Vector4:    EditorGUILayout.PropertyField(_vector4Event);    break;
-                    case OscEventReceiver.DataType.Vector2Int: EditorGUILayout.PropertyField(_vector2IntEvent); break;
-                    case OscEventReceiver.DataType.Vector3Int: EditorGUILayout.PropertyField(_vector3IntEvent); break;
-                    case OscEventReceiver.DataType.String:     EditorGUILayout.PropertyField(_stringEvent);     break;
+                    case DataType.None:       EditorGUILayout.PropertyField(_event);           break;
+                    case DataType.Int:        EditorGUILayout.PropertyField(_intEvent);        break;
+                    case DataType.Float:      EditorGUILayout.PropertyField(_floatEvent);      break;
+                    case DataType.String:     EditorGUILayout.PropertyField(_stringEvent);     break;
+                    case DataType.Vector2:    EditorGUILayout.PropertyField(_vector2Event);    break;
+                    case DataType.Vector3:    EditorGUILayout.PropertyField(_vector3Event);    break;
+                    case DataType.Vector4:    EditorGUILayout.PropertyField(_vector4Event);    break;
+                    case DataType.Vector2Int: EditorGUILayout.PropertyField(_vector2IntEvent); break;
+                    case DataType.Vector3Int: EditorGUILayout.PropertyField(_vector3IntEvent); break;
                 }
             }
 

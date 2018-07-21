@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace OscJack2
 {
-    [CustomEditor(typeof(OscPropertySender))]
+    [CanEditMultipleObjects, CustomEditor(typeof(OscPropertySender))]
     class OscPropertySenderEditor : Editor
     {
         #region Editable properties
@@ -15,9 +15,9 @@ namespace OscJack2
         SerializedProperty _ipAddress;
         SerializedProperty _udpPort;
         SerializedProperty _oscAddress;
-
         SerializedProperty _dataSource;
         SerializedProperty _propertyName;
+        SerializedProperty _keepSending;
 
         #endregion
 
@@ -36,74 +36,93 @@ namespace OscJack2
 
         void OnEnable()
         {
-            _ipAddress  = serializedObject.FindProperty("_ipAddress");
-            _udpPort    = serializedObject.FindProperty("_udpPort");
-            _oscAddress = serializedObject.FindProperty("_oscAddress");
-
+            _ipAddress    = serializedObject.FindProperty("_ipAddress");
+            _udpPort      = serializedObject.FindProperty("_udpPort");
+            _oscAddress   = serializedObject.FindProperty("_oscAddress");
             _dataSource   = serializedObject.FindProperty("_dataSource");
             _propertyName = serializedObject.FindProperty("_propertyName");
+            _keepSending  = serializedObject.FindProperty("_keepSending");
         }
 
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
 
-            EditorGUILayout.PropertyField(_ipAddress, Labels.IPAddress);
-            EditorGUILayout.PropertyField(_udpPort, Labels.UDPPortNumber);
+            EditorGUILayout.DelayedTextField(_ipAddress, Labels.IPAddress);
+            EditorGUILayout.DelayedIntField(_udpPort, Labels.UDPPortNumber);
             EditorGUILayout.PropertyField(_oscAddress, Labels.OSCAddress);
             EditorGUILayout.PropertyField(_dataSource);
 
-            // Component selector
-            var component = (Component)_dataSource.objectReferenceValue;
-            if (component != null)
+            if (!_dataSource.hasMultipleDifferentValues &&
+                !_propertyName.hasMultipleDifferentValues)
             {
-                // Cache the component list in the parent game object.
-                CacheComponentList(component.gameObject);
-
-                // Show the component selection drop-down list.
-                var index = Array.IndexOf(_componentList, component.GetType().Name);
-                var newIndex = EditorGUILayout.Popup("Component", index, _componentList);
-
-                // Update the component if the selection was changed.
-                if (index != newIndex)
-                {
-                    component = component.GetComponent(_componentList[newIndex]);
-                    _dataSource.objectReferenceValue = component;
-                }
+                // Custom drop-down UI
+                ShowComponentSelector();
+                ShowPropertySelector();
+            }
+            else
+            {
+                // Normal text field
+                EditorGUILayout.PropertyField(_propertyName);
             }
 
-            // Property selector
-            if (component != null)
-            {
-                // Cache the property list of the component.
-                CachePropertyList(component.GetType());
-
-                if (_propertyList.Length > 0)
-                {
-                    // Show the property selection drop-down list.
-                    var index = Array.IndexOf(_propertyList, _propertyName.stringValue);
-                    var newIndex = EditorGUILayout.Popup("Property", index, _propertyList);
-
-                    // Update the property if the selection was changed.
-                    if (index != newIndex)
-                        _propertyName.stringValue = _propertyList[newIndex];
-                }
-                else
-                {
-                    // No matched property found: Clear the previous selection
-                    _propertyName.stringValue = "";
-                }
-            }
-
-            // Clear the property selection if no component is selected.
-            if (component == null) _propertyName.stringValue = "";
+            EditorGUILayout.PropertyField(_keepSending);
 
             serializedObject.ApplyModifiedProperties();
         }
 
         #endregion
 
-        #region Property selection UI helpers
+        #region Custom drop-down UI
+
+        void ShowComponentSelector()
+        {
+            var component = (Component)_dataSource.objectReferenceValue;
+            if (component == null) return;
+
+            // Cache the component list in the parent game object.
+            CacheComponentList(component.gameObject);
+
+            // Show the component selection drop-down list.
+            var index = Array.IndexOf(_componentList, component.GetType().Name);
+            var newIndex = EditorGUILayout.Popup("Component", index, _componentList);
+
+            // Update the component if the selection was changed.
+            if (index != newIndex)
+            {
+                component = component.GetComponent(_componentList[newIndex]);
+                _dataSource.objectReferenceValue = component;
+            }
+        }
+
+        void ShowPropertySelector()
+        {
+            var component = (Component)_dataSource.objectReferenceValue;
+            if (component == null) return;
+
+            // Cache the property list of the component.
+            CachePropertyList(component.GetType());
+
+            if (_propertyList.Length > 0)
+            {
+                // Show the property selection drop-down list.
+                var index = Array.IndexOf(_propertyList, _propertyName.stringValue);
+                var newIndex = EditorGUILayout.Popup("Property", Mathf.Max(0, index), _propertyList);
+
+                // Update the property if the selection was changed.
+                if (index != newIndex)
+                    _propertyName.stringValue = _propertyList[newIndex];
+            }
+            else
+            {
+                // No matched property found: Clear the previous selection
+                _propertyName.stringValue = "";
+            }
+        }
+
+        #endregion
+
+        #region Custom UI helpers
 
         // Component list cache and its parent game object
         string[] _componentList;
@@ -113,7 +132,8 @@ namespace OscJack2
         string[] _propertyList;
         Type _cachedType;
 
-        HashSet<Type> _targetableTypes = new HashSet<Type>(new[]{
+        // Hashed set of targetable types
+        HashSet<Type> _targetableTypes = new HashSet<Type>(new [] {
             typeof(int), typeof(float), typeof(string),
             typeof(Vector2), typeof(Vector3), typeof(Vector4),
             typeof(Vector2Int), typeof(Vector3Int)
@@ -134,7 +154,8 @@ namespace OscJack2
         // Check the type of the given property.
         bool IsTargetable(PropertyInfo info)
         {
-            return info.GetGetMethod() != null && _targetableTypes.Contains(info.PropertyType);
+            return info.GetGetMethod() != null &&
+                _targetableTypes.Contains(info.PropertyType);
         }
 
         // Cache properties from the given class if it's different from the

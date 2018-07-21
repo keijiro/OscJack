@@ -1,58 +1,116 @@
 OSC Jack
 ========
 
-OSC Jack is a class library for handling OSC over UDP input in Unity.
+![gif](https://i.imgur.com/mjp2o3t.gif)
 
-Setting up
-----------
+**OSC Jack** is a lightweight implementation of [OSC] (Open Sound Control)
+server and client that is written in C#. It mainly aims to provide basic OSC
+support to [Unity].
 
-1. Import [the unitypackage file][unitypackage].
-2. Set [the listening port list][portlist].
-3. There is no step three.
+[OSC]: http://opensoundcontrol.org/
+[Unity]: https://unity3d.com/
 
-[unitypackage]: https://github.com/keijiro/OscJack/raw/master/OscJack.unitypackage
-[portlist]: https://github.com/keijiro/OscJack/blob/master/Assets/OscJack/OscMaster.cs#L32
+System Requirements
+-------------------
 
-API Reference
--------------
+- Unity 2017.1 or later
 
-#### static bool OscMaster.HasData (string address)
+OSC Jack uses and requires a `System.Net.Sockets` implementation. It means that
+it runs on most platforms but doesn't support few special platforms like WebGL
+or network-restrictive consoles.
 
-Determines whether any data has arrived to a given address.
+OSC Components
+--------------
 
-#### static Object[] OscMaster.GetData (string address)
+### OSC Event Receiver
 
-Returns a data set which was sent to a given address.
+![OSC Event Receiver](https://i.imgur.com/tWUe42Y.png)
 
-#### static void OscMaster.ClearData (string address)
+**OSC Event Receiver** receives OSC messages and invokes a [UnityEvent] with
+received data. This can be a handy way to modify property values or invoke
+methods based on OSC messages.
 
-Clears data at a given address.
+[UnityEvent]: https://docs.unity3d.com/Manual/UnityEvents.html
 
-OSC Monitor Window
-------------------
+### OSC Property Sender
 
-OSC Jack provides the OSC Monitor window, which shows the address-value
-pair list of arrived OSC messages. To open the OSC Monitor window, select
-Window menu -> OSC Jack.
+![OSC Property Sender](https://i.imgur.com/dkx26EE.png)
+
+**OSC Property Sender** provides a handy way to send OSC messages based on a
+component property value. It observes a given component property, and sends OSC
+messages when changes in the property are detected. 
+
+OSC Monitor
+-----------
+
+![OSC Monitor](https://i.imgur.com/ZExVcuz.png)
+
+**OSC Monitor** is a small utility to show incoming messages to existing OSC
+servers. It's useful to check if messages are correctly received at the
+servers. To open the monitor, choose "Window"-"OSC Monitor" from the main menu.
+
+Scripting interface
+-------------------
+
+OSC Jack also provides non-Unity dependent classes that can be used from any
+C# script. These classes are useful when sending/receiving OSC messages that
+are not directly related to component properties or events.
+
+### OSC Client class
+
+`OscClient` provides basic functionalities to send OSC messages to a specific
+UDP port of a host. It supports `int`, `float` and `string` types, and it's
+capable of sending up to four elements within a single message. It implements
+`IDispose`, so it can be manually terminated by calling the `Dispose` method
+(or left it until automatically being finalized).
+
+```csharp
+// IP address, port number
+var client = new OscClient("127.0.0.1", 9000);
+
+// Send two-component float values ten times.
+for (var i = 0; i < 10; i++) {
+    yield return new WaitForSeconds(0.5f);
+    client.Send("/test",       // OSC address
+                i * 10.0f,     // First element
+                Random.value); // Second element
+}
+
+// Terminate the client.
+client.Dispose();
+```
+
+### OSC Server class
+
+`OscServer` provides basic functionalities to receive OSC messages that are
+sent to a specific UDP port of the host. It starts receiving messages when a
+server instance is created, and terminates when disposed (via the `IDispose`
+interface).
+
+You can add delegates to `MessageDispatcher` to receive messages sent to a
+specific OSC address, or you can give an empty string as an address to receive
+all messages arrived at the port.
+
+Just like the client class, it supports `int`, `float` and `string` types, and
+capable of receiving up to four elements within a single message.
+
+```csharp
+var server = new OscServer(9000); // Port number
+
+server.MessageDispatcher.AddCallback(
+    "/test", // OSC address
+    (string address, OscDataHandle data) => {
+        Debug.Log(string.Format("({0}, {1})",
+            data.GetElementAsFloat(0),
+            data.GetElementAsFloat(1)));
+    }
+);
+
+yield return new WaitForSeconds(10);
+server.Dispose();
+```
 
 License
 -------
 
-Copyright (C) 2015 Keijiro Takahashi
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Public domain

@@ -1,0 +1,12 @@
+{
+    "name": "jp.keijiro.osc-jack.Editor",
+    "references": [
+        "jp.keijiro.osc-jack.Runtime"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

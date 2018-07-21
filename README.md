@@ -49,7 +49,7 @@ OSC Monitor
 servers. It's useful to check if messages are correctly received at the
 servers. To open the monitor, choose "Window"-"OSC Monitor" from the main menu.
 
-Scripting interface
+Scripting Interface
 -------------------
 
 OSC Jack also provides non-Unity dependent classes that can be used from any
@@ -90,6 +90,10 @@ interface).
 You can add delegates to `MessageDispatcher` to receive messages sent to a
 specific OSC address, or you can give an empty string as an address to receive
 all messages arrived at the port.
+
+Note that the delegates are to be called in the server thread; You have to
+queue the events for processing them in the main thread (this will be required
+in most cases of Unity).
 
 Just like the client class, it supports `int`, `float` and `string` types, and
 capable of receiving up to four elements within a single message.

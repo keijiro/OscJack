@@ -127,7 +127,11 @@ namespace OscJack
             switch (_dataType)
             {
                 case DataType.None:
-                    while (_bangCount-- > 0) _event.Invoke();
+                    while (_bangCount > 0)
+                    {
+                        _event.Invoke();
+                        _bangCount--;
+                    }
                     break;
 
                 case DataType.Int:

@@ -19,6 +19,21 @@ OSC Jack uses and requires a `System.Net.Sockets` implementation. It means that
 it runs on most platforms but doesn't support few special platforms like WebGL
 or network-restrictive consoles.
 
+Installation
+------------
+
+To install OSC Jack to your project, download one of the `.unitypackage` files
+in the [Releases] page, then import it via the "Assets"-"Import Package" menu.
+
+Another way to install the package is using the [upm branch] of this
+repository, which is reorganized to adapt to Unity [Package Manager]. This is
+handy to keep the package updated with using the [git submodule] feature.
+
+[Releases]: https://github.com/keijiro/OscJack/releases
+[upm branch]: https://github.com/keijiro/OscJack/tree/upm
+[Package Manager]: https://docs.unity3d.com/Packages/com.unity.package-manager-ui@latest/
+[git submodule]: https://git-scm.com/book/en/v2/Git-Tools-Submodules
+
 OSC Components
 --------------
 

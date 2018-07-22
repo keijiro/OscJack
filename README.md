@@ -23,7 +23,8 @@ Installation
 ------------
 
 To install OSC Jack to your project, download one of the `.unitypackage` files
-in the [Releases] page, then import it via the "Assets"-"Import Package" menu.
+in the [Releases] page, then navigate to **Assets > Import Package > Custom
+Package...** to import the file.
 
 Another way to install the package is using the [upm branch] of this
 repository, which is reorganized to adapt to Unity [Package Manager]. This is
@@ -62,7 +63,7 @@ OSC Monitor
 
 **OSC Monitor** is a small utility to show incoming messages to existing OSC
 servers. It's useful to check if messages are correctly received at the
-servers. To open the monitor, choose "Window"-"OSC Monitor" from the main menu.
+servers. To open the monitor, navigate to **Window > OSC Monitor**.
 
 Scripting Interface
 -------------------

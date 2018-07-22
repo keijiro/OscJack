@@ -1,0 +1,8 @@
+{
+    "name": "jp.keijiro.osc-jack",
+    "displayName": "OSC Jack",
+    "version": "0.1.0",
+    "unity": "2018.1",
+    "description": "Lightweight implementation of OSC server/client",
+    "dependencies": { }
+}

@@ -18,7 +18,7 @@ namespace OscJack
 
         public void AddCallback(string address, MessageCallback callback)
         {
-            lock (_delegatesLock)
+            lock (_callbackMap)
             {
                 if (_callbackMap.ContainsKey(address))
                     _callbackMap[address] += callback;
@@ -29,7 +29,7 @@ namespace OscJack
 
         public void RemoveCallback(string address, MessageCallback callback)
         {
-            lock (_delegatesLock)
+            lock (_callbackMap)
             {
                 var temp = _callbackMap[address] - callback;
                 if (temp != null)
@@ -45,7 +45,7 @@ namespace OscJack
 
         internal void Dispatch(string address, OscDataHandle data)
         {
-            lock (_delegatesLock)
+            lock (_callbackMap)
             {
                 MessageCallback callback;
 
@@ -65,8 +65,6 @@ namespace OscJack
 
         Dictionary<string, MessageCallback>
             _callbackMap = new Dictionary<string, MessageCallback>();
-
-        Object _delegatesLock = new Object();
 
         #endregion
     }

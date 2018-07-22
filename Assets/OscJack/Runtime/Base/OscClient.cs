@@ -32,6 +32,13 @@ namespace OscJack
 
         #region Packet sender methods
 
+        public void Send(string address)
+        {
+            _encoder.Clear();
+            _encoder.Append(address);
+            _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
+        }
+
         public void Send(string address, int data)
         {
             _encoder.Clear();

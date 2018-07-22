@@ -135,7 +135,7 @@ namespace OscJack
                 return;
             }
 
-            var server = OscMaster.GetServer(_udpPort);
+            var server = OscMaster.GetSharedServer(_udpPort);
             server.MessageDispatcher.AddCallback(_oscAddress, OnDataReceive);
 
             _currentPort = _udpPort;
@@ -166,7 +166,7 @@ namespace OscJack
         {
             if (string.IsNullOrEmpty(_currentAddress)) return;
 
-            var server = OscMaster.GetServer(_currentPort);
+            var server = OscMaster.GetSharedServer(_currentPort);
             server.MessageDispatcher.RemoveCallback(_currentAddress, OnDataReceive);
 
             _currentAddress = null;

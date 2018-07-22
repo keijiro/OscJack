@@ -28,7 +28,7 @@ namespace OscJack
 
         void UpdateSettings()
         {
-            _client = OscMaster.GetClient(_ipAddress, _udpPort);
+            _client = OscMaster.GetSharedClient(_ipAddress, _udpPort);
 
             if (_dataSource != null && !string.IsNullOrEmpty(_propertyName))
                 _propertyInfo = _dataSource.GetType().GetProperty(_propertyName);

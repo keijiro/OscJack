@@ -64,6 +64,65 @@ namespace OscJack
         Queue<float> _floatQueue;
         Queue<string> _stringQueue;
 
+        int DequeueInt()
+        {
+            lock (_intQueue) return _intQueue.Dequeue();
+        }
+
+        float DequeueFloat()
+        {
+            lock (_floatQueue) return _floatQueue.Dequeue();
+        }
+
+        string DequeueString()
+        {
+            lock (_stringQueue) return _stringQueue.Dequeue();
+        }
+
+        Vector2 DequeueVector2()
+        {
+            lock (_floatQueue) return new Vector2(
+                _floatQueue.Dequeue(),
+                _floatQueue.Dequeue()
+            );
+        }
+
+        Vector3 DequeueVector3()
+        {
+            lock (_floatQueue) return new Vector3(
+                _floatQueue.Dequeue(),
+                _floatQueue.Dequeue(),
+                _floatQueue.Dequeue()
+            );
+        }
+
+        Vector4 DequeueVector4()
+        {
+            lock (_floatQueue) return new Vector4(
+                _floatQueue.Dequeue(),
+                _floatQueue.Dequeue(),
+                _floatQueue.Dequeue(),
+                _floatQueue.Dequeue()
+            );
+        }
+
+        Vector2Int DequeueVector2Int()
+        {
+            lock (_intQueue) return new Vector2Int(
+                _intQueue.Dequeue(),
+                _intQueue.Dequeue()
+            );
+        }
+
+        Vector3Int DequeueVector3Int()
+        {
+            lock (_intQueue) return new Vector3Int(
+                _intQueue.Dequeue(),
+                _intQueue.Dequeue(),
+                _intQueue.Dequeue()
+            );
+        }
+
         #endregion
 
         #region MonoBehaviour implementation
@@ -136,61 +195,42 @@ namespace OscJack
 
                 case DataType.Int:
                     while (_intQueue.Count > 0)
-                        _intEvent.Invoke(_intQueue.Dequeue());
+                        _intEvent.Invoke(DequeueInt());
                     break;
 
                 case DataType.Float:
                     while (_floatQueue.Count > 0)
-                        _floatEvent.Invoke(_floatQueue.Dequeue());
+                        _floatEvent.Invoke(DequeueFloat());
                     break;
 
                 case DataType.String:
                     while (_stringQueue.Count > 0)
-                        _stringEvent.Invoke(_stringQueue.Dequeue());
+                        _stringEvent.Invoke(DequeueString());
                     break;
 
                 case DataType.Vector2:
                     while (_floatQueue.Count > 0)
-                        _vector2Event.Invoke(new Vector2(
-                            _floatQueue.Dequeue(),
-                            _floatQueue.Dequeue()
-                        ));
+                        _vector2Event.Invoke(DequeueVector2());
                     break;
 
                 case DataType.Vector3:
                     while (_floatQueue.Count > 0)
-                        _vector3Event.Invoke(new Vector3(
-                            _floatQueue.Dequeue(),
-                            _floatQueue.Dequeue(),
-                            _floatQueue.Dequeue()
-                        ));
+                        _vector3Event.Invoke(DequeueVector3());
                     break;
 
                 case DataType.Vector4:
                     while (_floatQueue.Count > 0)
-                        _vector3Event.Invoke(new Vector4(
-                            _floatQueue.Dequeue(),
-                            _floatQueue.Dequeue(),
-                            _floatQueue.Dequeue(),
-                            _floatQueue.Dequeue()
-                        ));
+                        _vector4Event.Invoke(DequeueVector4());
                     break;
 
                 case DataType.Vector2Int:
                     while (_intQueue.Count > 0)
-                        _vector2IntEvent.Invoke(new Vector2Int(
-                            _intQueue.Dequeue(),
-                            _intQueue.Dequeue()
-                        ));
+                        _vector2IntEvent.Invoke(DequeueVector2Int());
                     break;
 
                 case DataType.Vector3Int:
                     while (_intQueue.Count > 0)
-                        _vector3IntEvent.Invoke(new Vector3Int(
-                            _intQueue.Dequeue(),
-                            _intQueue.Dequeue(),
-                            _intQueue.Dequeue()
-                        ));
+                        _vector3IntEvent.Invoke(DequeueVector3Int());
                     break;
             }
         }
@@ -208,44 +248,62 @@ namespace OscJack
                     break;
 
                 case DataType.Int:
-                    _intQueue.Enqueue(data.GetElementAsInt(0));
+                    lock (_intQueue)
+                        _intQueue.Enqueue(data.GetElementAsInt(0));
                     break;
 
                 case DataType.Float:
-                    _floatQueue.Enqueue(data.GetElementAsFloat(0));
+                    lock (_floatQueue)
+                        _floatQueue.Enqueue(data.GetElementAsFloat(0));
                     break;
 
                 case DataType.String:
-                    _stringQueue.Enqueue(data.GetElementAsString(0));
+                    lock (_stringQueue)
+                        _stringQueue.Enqueue(data.GetElementAsString(0));
                     break;
 
                 case DataType.Vector2:
-                    _floatQueue.Enqueue(data.GetElementAsFloat(0));
-                    _floatQueue.Enqueue(data.GetElementAsFloat(1));
+                    lock (_floatQueue)
+                    {
+                        _floatQueue.Enqueue(data.GetElementAsFloat(0));
+                        _floatQueue.Enqueue(data.GetElementAsFloat(1));
+                    }
                     break;
 
                 case DataType.Vector3:
-                    _floatQueue.Enqueue(data.GetElementAsFloat(0));
-                    _floatQueue.Enqueue(data.GetElementAsFloat(1));
-                    _floatQueue.Enqueue(data.GetElementAsFloat(2));
+                    lock (_floatQueue)
+                    {
+                        _floatQueue.Enqueue(data.GetElementAsFloat(0));
+                        _floatQueue.Enqueue(data.GetElementAsFloat(1));
+                        _floatQueue.Enqueue(data.GetElementAsFloat(2));
+                    }
                     break;
 
                 case DataType.Vector4:
-                    _floatQueue.Enqueue(data.GetElementAsFloat(0));
-                    _floatQueue.Enqueue(data.GetElementAsFloat(1));
-                    _floatQueue.Enqueue(data.GetElementAsFloat(2));
-                    _floatQueue.Enqueue(data.GetElementAsFloat(3));
+                    lock (_floatQueue)
+                    {
+                        _floatQueue.Enqueue(data.GetElementAsFloat(0));
+                        _floatQueue.Enqueue(data.GetElementAsFloat(1));
+                        _floatQueue.Enqueue(data.GetElementAsFloat(2));
+                        _floatQueue.Enqueue(data.GetElementAsFloat(3));
+                    }
                     break;
 
                 case DataType.Vector2Int:
-                    _intQueue.Enqueue(data.GetElementAsInt(0));
-                    _intQueue.Enqueue(data.GetElementAsInt(1));
+                    lock (_intQueue)
+                    {
+                        _intQueue.Enqueue(data.GetElementAsInt(0));
+                        _intQueue.Enqueue(data.GetElementAsInt(1));
+                    }
                     break;
 
                 case DataType.Vector3Int:
-                    _intQueue.Enqueue(data.GetElementAsInt(0));
-                    _intQueue.Enqueue(data.GetElementAsInt(1));
-                    _intQueue.Enqueue(data.GetElementAsInt(2));
+                    lock (_intQueue)
+                    {
+                        _intQueue.Enqueue(data.GetElementAsInt(0));
+                        _intQueue.Enqueue(data.GetElementAsInt(1));
+                        _intQueue.Enqueue(data.GetElementAsInt(2));
+                    }
                     break;
             }
         }

@@ -36,6 +36,7 @@ namespace OscJack
         {
             _encoder.Clear();
             _encoder.Append(address);
+            _encoder.Append(",");
             _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
         }
 

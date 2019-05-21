@@ -36,6 +36,17 @@ namespace OscJack
             var offs = _offsets[index];
             if (tag == 'f') return OscDataTypes.ReadFloat(_sharedBuffer, offs);
             if (tag == 'i') return OscDataTypes.ReadInt(_sharedBuffer, offs);
+                return 0;
+        }
+            //vasco
+        public double GetElementAsDouble(int index)
+        {
+            if (index >= _typeTags.Count) return 0;
+            var tag = _typeTags[index];
+            var offs = _offsets[index];
+            if (tag == 'f') return OscDataTypes.ReadFloat(_sharedBuffer, offs);
+            if (tag == 'i') return OscDataTypes.ReadInt(_sharedBuffer, offs);
+            if (tag == 'd') return OscDataTypes.ReadDouble(_sharedBuffer, offs);
             return 0;
         }
 
@@ -82,6 +93,11 @@ namespace OscJack
                 if (tag == 'i' || tag == 'f')
                 {
                     offset += 4;
+                }
+                if (tag == 'd')
+                {
+                    //vasco
+                    offset += 8;
                 }
                 else if (tag == 's')
                 {

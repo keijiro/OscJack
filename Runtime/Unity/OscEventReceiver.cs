@@ -38,17 +38,17 @@ namespace OscJack
 
         [SerializeField] int _udpPort = 9000;
         [SerializeField] string _oscAddress = "/unity";
-        [SerializeField] DataType _dataType;
+        [SerializeField] DataType _dataType = DataType.None;
 
-        [SerializeField] UnityEvent _event;
-        [SerializeField] IntEvent _intEvent;
-        [SerializeField] FloatEvent _floatEvent;
-        [SerializeField] Vector2Event _vector2Event;
-        [SerializeField] Vector3Event _vector3Event;
-        [SerializeField] Vector4Event _vector4Event;
-        [SerializeField] Vector2IntEvent _vector2IntEvent;
-        [SerializeField] Vector3IntEvent _vector3IntEvent;
-        [SerializeField] StringEvent _stringEvent;
+        [SerializeField] UnityEvent _event = null;
+        [SerializeField] IntEvent _intEvent = null;
+        [SerializeField] FloatEvent _floatEvent = null;
+        [SerializeField] Vector2Event _vector2Event = null;
+        [SerializeField] Vector3Event _vector3Event = null;
+        [SerializeField] Vector4Event _vector4Event = null;
+        [SerializeField] Vector2IntEvent _vector2IntEvent = null;
+        [SerializeField] Vector3IntEvent _vector3IntEvent = null;
+        [SerializeField] StringEvent _stringEvent = null;
 
         #endregion
 

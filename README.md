@@ -13,7 +13,7 @@ support to [Unity].
 System Requirements
 -------------------
 
-- Unity 2017.1 or later
+- Unity 2017.3 or later
 
 OSC Jack uses and requires a `System.Net.Sockets` implementation. It means that
 it runs on most platforms but doesn't support few special platforms like WebGL

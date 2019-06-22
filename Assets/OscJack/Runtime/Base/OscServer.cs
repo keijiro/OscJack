@@ -56,6 +56,14 @@ namespace OscJack
             #endif
         }
 
+        public void JoinMulticastGroup(string address)
+        {
+            _socket.SetSocketOption(
+                SocketOptionLevel.IP,
+                SocketOptionName.AddMembership,
+                new MulticastOption(IPAddress.Parse(address), IPAddress.Any)
+            );
+        }
         #endregion
 
         #region IDispose implementation

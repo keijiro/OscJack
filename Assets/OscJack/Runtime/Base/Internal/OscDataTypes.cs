@@ -4,15 +4,16 @@
 using System;
 using System.Text;
 
+
 namespace OscJack
 {
     internal static class OscDataTypes
     {
-        static Byte[] _temp4 = new Byte[4]; // only used to reverse byte order
+        static Byte[] _temp4 = new Byte[8]; // only used to reverse byte order
 
         public static bool IsSupportedTag(char tag)
         {
-            return tag == 'i' || tag == 'f' || tag == 's' || tag == 'b';
+            return tag == 'i' || tag == 'f' || tag == 's' || tag == 'b' || tag == 'd';
         }
 
         public static int Align4(int length)
@@ -36,6 +37,22 @@ namespace OscJack
             _temp4[3] = buffer[offset    ];
             return BitConverter.ToSingle(_temp4, 0);
         }
+
+        //vasco
+        public static double ReadDouble(Byte[] buffer, int offset)
+        {
+            _temp4[0] = buffer[offset + 7];
+            _temp4[1] = buffer[offset + 6];
+            _temp4[2] = buffer[offset + 5];
+            _temp4[3] = buffer[offset + 4];
+            _temp4[4] = buffer[offset + 3];
+            _temp4[5] = buffer[offset + 2];
+            _temp4[6] = buffer[offset + 1];
+            _temp4[7] = buffer[offset];
+            return BitConverter.ToDouble(_temp4, 0);
+        }
+
+
 
         public static int GetStringSize(Byte[] buffer, int offset)
         {

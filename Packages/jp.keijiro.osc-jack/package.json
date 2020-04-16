@@ -1,0 +1,12 @@
+{
+  "author": "Keijiro Takahashi",
+  "description": "Lightweight implementation of OSC server/client",
+  "displayName": "OSC Jack",
+  "keywords": [ "unity" ],
+  "license": "Unlicense",
+  "name": "jp.keijiro.osc-jack",
+  "repository": "github:keijiro/OscJack",
+  "unity": "2019.3",
+  "unityRelease": "0f1",
+  "version": "1.0.0"
+}

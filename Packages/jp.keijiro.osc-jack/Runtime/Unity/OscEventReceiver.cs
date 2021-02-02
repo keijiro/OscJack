@@ -123,11 +123,7 @@ namespace OscJack
             );
         }
 
-        #endregion
-
-        #region MonoBehaviour implementation
-
-        void OnEnable()
+        void RegisterCallback()
         {
             if (string.IsNullOrEmpty(_oscAddress))
             {
@@ -140,6 +136,26 @@ namespace OscJack
 
             _currentPort = _udpPort;
             _currentAddress = _oscAddress;
+        }
+
+        void UnregisterCallback()
+        {
+            if (string.IsNullOrEmpty(_currentAddress)) return;
+
+            var server = OscMaster.GetSharedServer(_currentPort);
+            server.MessageDispatcher.RemoveCallback(_currentAddress, OnDataReceive);
+
+            _currentAddress = null;
+        }
+
+        #endregion
+
+        #region MonoBehaviour implementation
+
+        void OnEnable()
+        {
+            UnregisterCallback();
+            RegisterCallback();
 
             switch (_dataType)
             {
@@ -163,22 +179,12 @@ namespace OscJack
         }
 
         void OnDisable()
-        {
-            if (string.IsNullOrEmpty(_currentAddress)) return;
-
-            var server = OscMaster.GetSharedServer(_currentPort);
-            server.MessageDispatcher.RemoveCallback(_currentAddress, OnDataReceive);
-
-            _currentAddress = null;
-        }
+          => UnregisterCallback();
 
         void OnValidate()
         {
-            if (Application.isPlaying)
-            {
-                OnDisable();
-                OnEnable();
-            }
+            if (Application.isPlaying && enabled)
+                OnEnable(); // Update the settings.
         }
 
         void Update()

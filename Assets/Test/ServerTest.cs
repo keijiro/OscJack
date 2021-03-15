@@ -2,16 +2,17 @@
 // https://github.com/keijiro/OscJack
 
 using UnityEngine;
-using System.Collections;
 using OscJack;
 
 class ServerTest : MonoBehaviour
 {
-    IEnumerator Start()
-    {
-        var server = new OscServer(9000); // Port number
+    OscServer _server;
 
-        server.MessageDispatcher.AddCallback(
+    void Start()
+    {
+        _server = new OscServer(9000); // Port number
+
+        _server.MessageDispatcher.AddCallback(
             "/test", // OSC address
             (string address, OscDataHandle data) => {
                 Debug.Log(string.Format("({0}, {1})",
@@ -19,8 +20,11 @@ class ServerTest : MonoBehaviour
                     data.GetElementAsFloat(1)));
             }
         );
+    }
 
-        yield return new WaitForSeconds(10);
-        server.Dispose();
+    void OnDestroy()
+    {
+        _server?.Dispose();
+        _server = null;
     }
 }

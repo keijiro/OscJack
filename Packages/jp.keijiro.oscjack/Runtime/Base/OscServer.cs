@@ -13,7 +13,7 @@ using System.Threading;
 #if OSC_SERVER_LIST
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-[assembly:System.Runtime.CompilerServices.InternalsVisibleTo("jp.keijiro.osc-jack.Editor")] 
+[assembly:System.Runtime.CompilerServices.InternalsVisibleTo("OscJack.Editor")] 
 #endif
 
 namespace OscJack

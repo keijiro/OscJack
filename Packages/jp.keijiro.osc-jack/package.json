@@ -4,7 +4,7 @@
   "displayName": "OSC Jack",
   "keywords": [ "unity" ],
   "license": "Unlicense",
-  "name": "jp.keijiro.oscjack",
+  "name": "jp.keijiro.osc-jack",
   "repository": "github:keijiro/OscJack",
   "unity": "2019.4",
   "unityRelease": "0f1",

@@ -12,8 +12,8 @@
       },
       "url": "https://packages.unity.com"
     },
-    "jp.keijiro.oscjack": {
-      "version": "file:jp.keijiro.oscjack",
+    "jp.keijiro.osc-jack": {
+      "version": "file:jp.keijiro.osc-jack",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}

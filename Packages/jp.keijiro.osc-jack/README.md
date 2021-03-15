@@ -41,7 +41,7 @@ To the `scopedRegistries` section:
 To the `dependencies` section:
 
 ```
-"jp.keijiro.oscjack": "1.0.3"
+"jp.keijiro.osc-jack": "1.0.3"
 ```
 
 After changes, the manifest file should look like below:
@@ -56,7 +56,7 @@ After changes, the manifest file should look like below:
     }
   ],
   "dependencies": {
-    "jp.keijiro.oscjack": "1.0.3",
+    "jp.keijiro.osc-jack": "1.0.3",
     ...
 ```
 

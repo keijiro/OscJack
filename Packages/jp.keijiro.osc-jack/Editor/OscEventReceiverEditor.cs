@@ -10,7 +10,7 @@ namespace OscJack
     [CanEditMultipleObjects, CustomEditor(typeof(OscEventReceiver))]
     class OscEventReceiverEditor : Editor
     {
-        SerializedProperty _udpPort;
+        SerializedProperty _connection;
         SerializedProperty _oscAddress;
         SerializedProperty _dataType;
 
@@ -26,13 +26,12 @@ namespace OscJack
 
         static class Labels
         {
-            public static readonly GUIContent UDPPortNumber = new GUIContent("UDP Port Number");
             public static readonly GUIContent OSCAddress = new GUIContent("OSC Address");
         }
 
         void OnEnable()
         {
-            _udpPort    = serializedObject.FindProperty("_udpPort");
+            _connection = serializedObject.FindProperty("_connection");
             _oscAddress = serializedObject.FindProperty("_oscAddress");
             _dataType   = serializedObject.FindProperty("_dataType");
 
@@ -51,7 +50,7 @@ namespace OscJack
         {
             serializedObject.Update();
 
-            EditorGUILayout.DelayedIntField(_udpPort, Labels.UDPPortNumber);
+            EditorGUILayout.PropertyField(_connection);
             EditorGUILayout.DelayedTextField(_oscAddress, Labels.OSCAddress);
             EditorGUILayout.PropertyField(_dataType);
 

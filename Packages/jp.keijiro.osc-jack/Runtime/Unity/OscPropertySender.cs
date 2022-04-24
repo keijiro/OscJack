@@ -12,8 +12,7 @@ namespace OscJack
     {
         #region Editable fields
 
-        [SerializeField] string _ipAddress = "127.0.0.1";
-        [SerializeField] int _udpPort = 9000;
+        [SerializeField] OscConnection _connection = null;
         [SerializeField] string _oscAddress = "/unity";
         [SerializeField] Component _dataSource = null;
         [SerializeField] string _propertyName = "";
@@ -28,7 +27,10 @@ namespace OscJack
 
         void UpdateSettings()
         {
-            _client = OscMaster.GetSharedClient(_ipAddress, _udpPort);
+            if (_connection != null)
+                _client = OscMaster.GetSharedClient(_connection.host, _connection.port);
+            else
+                _client = null;
 
             if (_dataSource != null && !string.IsNullOrEmpty(_propertyName))
                 _propertyInfo = _dataSource.GetType().GetProperty(_propertyName);
@@ -52,7 +54,7 @@ namespace OscJack
 
         void Update()
         {
-            if (_propertyInfo == null) return;
+            if (_client == null || _propertyInfo == null) return;
 
             var type = _propertyInfo.PropertyType;
             var value = _propertyInfo.GetValue(_dataSource, null); // boxing!!

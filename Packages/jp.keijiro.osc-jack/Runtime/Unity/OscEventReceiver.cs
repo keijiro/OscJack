@@ -36,7 +36,7 @@ namespace OscJack
 
         #region Editable fields
 
-        [SerializeField] int _udpPort = 9000;
+        [SerializeField] OscConnection _connection = null;
         [SerializeField] string _oscAddress = "/unity";
         [SerializeField] DataType _dataType = DataType.None;
 
@@ -125,22 +125,25 @@ namespace OscJack
 
         void RegisterCallback()
         {
-            if (string.IsNullOrEmpty(_oscAddress))
+            var port = _connection?.port ?? 0;
+
+            if (port == 0 || string.IsNullOrEmpty(_oscAddress))
             {
+                _currentPort = 0;
                 _currentAddress = null;
                 return;
             }
 
-            var server = OscMaster.GetSharedServer(_udpPort);
+            var server = OscMaster.GetSharedServer(port);
             server.MessageDispatcher.AddCallback(_oscAddress, OnDataReceive);
 
-            _currentPort = _udpPort;
+            _currentPort = port;
             _currentAddress = _oscAddress;
         }
 
         void UnregisterCallback()
         {
-            if (string.IsNullOrEmpty(_currentAddress)) return;
+            if (_currentPort == 0 || string.IsNullOrEmpty(_currentAddress)) return;
 
             var server = OscMaster.GetSharedServer(_currentPort);
             server.MessageDispatcher.RemoveCallback(_currentAddress, OnDataReceive);

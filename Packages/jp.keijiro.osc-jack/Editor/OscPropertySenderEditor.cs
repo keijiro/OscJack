@@ -15,8 +15,7 @@ namespace OscJack
     {
         #region Editable properties
 
-        SerializedProperty _ipAddress;
-        SerializedProperty _udpPort;
+        SerializedProperty _connection;
         SerializedProperty _oscAddress;
         SerializedProperty _dataSource;
         SerializedProperty _propertyName;
@@ -28,8 +27,6 @@ namespace OscJack
 
         static class Labels
         {
-            public static readonly GUIContent IPAddress = new GUIContent("IP Address");
-            public static readonly GUIContent UDPPortNumber = new GUIContent("UDP Port Number");
             public static readonly GUIContent OSCAddress = new GUIContent("OSC Address");
         }
 
@@ -39,8 +36,7 @@ namespace OscJack
 
         void OnEnable()
         {
-            _ipAddress    = serializedObject.FindProperty("_ipAddress");
-            _udpPort      = serializedObject.FindProperty("_udpPort");
+            _connection   = serializedObject.FindProperty("_connection");
             _oscAddress   = serializedObject.FindProperty("_oscAddress");
             _dataSource   = serializedObject.FindProperty("_dataSource");
             _propertyName = serializedObject.FindProperty("_propertyName");
@@ -51,8 +47,7 @@ namespace OscJack
         {
             serializedObject.Update();
 
-            EditorGUILayout.DelayedTextField(_ipAddress, Labels.IPAddress);
-            EditorGUILayout.DelayedIntField(_udpPort, Labels.UDPPortNumber);
+            EditorGUILayout.PropertyField(_connection);
             EditorGUILayout.PropertyField(_oscAddress, Labels.OSCAddress);
             EditorGUILayout.PropertyField(_dataSource);
 

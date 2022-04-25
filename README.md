@@ -4,8 +4,8 @@ OSC Jack
 ![gif](https://i.imgur.com/mjp2o3t.gif)
 
 **OSC Jack** is a lightweight implementation of [OSC] (Open Sound Control)
-server and client that is written in C#. It mainly aims to provide basic OSC
-support to [Unity].
+server/client written in C#, mainly aiming to provide basic OSC support to
+[Unity].
 
 [OSC]: http://opensoundcontrol.org/
 [Unity]: https://unity3d.com/
@@ -13,52 +13,30 @@ support to [Unity].
 System Requirements
 -------------------
 
-- Unity 2019.4 or later
+- Unity 2021.3 or later
 
-OSC Jack uses and requires a `System.Net.Sockets` implementation. It means that
-it runs on most platforms but doesn't support few special platforms like WebGL
-or network-restrictive consoles.
+OSC Jack requires `System.Net.Sockets` that supports most platforms but a few
+network-restrictive platforms like WebGL.
 
-Installation
-------------
+How To Install
+--------------
 
 This package uses the [scoped registry] feature to resolve package
-dependencies. Please add the following sections to the manifest file
-(Packages/manifest.json).
+dependencies. Open the Package Manager page in the Project Settings window and
+add the following entry to the Scoped Registries list:
+
+- Name: `Keijiro`
+- URL: `https://registry.npmjs.com`
+- Scope: `jp.keijiro`
+
+![Scoped Registry](https://user-images.githubusercontent.com/343936/162576797-ae39ee00-cb40-4312-aacd-3247077e7fa1.png)
+
+Now you can install the package from My Registries page in the Package Manager
+window.
+
+![My Registries](https://user-images.githubusercontent.com/343936/162576825-4a9a443d-62f9-48d3-8a82-a3e80b486f04.png)
 
 [scoped registry]: https://docs.unity3d.com/Manual/upm-scoped.html
-
-To the `scopedRegistries` section:
-
-```
-{
-  "name": "Keijiro",
-  "url": "https://registry.npmjs.com",
-  "scopes": [ "jp.keijiro" ]
-}
-```
-
-To the `dependencies` section:
-
-```
-"jp.keijiro.osc-jack": "1.0.3"
-```
-
-After changes, the manifest file should look like below:
-
-```
-{
-  "scopedRegistries": [
-    {
-      "name": "Keijiro",
-      "url": "https://registry.npmjs.com",
-      "scopes": [ "jp.keijiro" ]
-    }
-  ],
-  "dependencies": {
-    "jp.keijiro.osc-jack": "1.0.3",
-    ...
-```
 
 OSC Components
 --------------
@@ -68,8 +46,7 @@ OSC Components
 ![OSC Event Receiver](https://i.imgur.com/tWUe42Y.png)
 
 **OSC Event Receiver** receives OSC messages and invokes a [UnityEvent] with
-received data. This can be a handy way to modify property values or invoke
-methods based on OSC messages.
+received data.
 
 [UnityEvent]: https://docs.unity3d.com/Manual/UnityEvents.html
 
@@ -77,80 +54,64 @@ methods based on OSC messages.
 
 ![OSC Property Sender](https://i.imgur.com/dkx26EE.png)
 
-**OSC Property Sender** provides a handy way to send OSC messages based on a
-component property value. It observes a given component property, and sends OSC
-messages when changes in the property are detected. 
+**OSC Property Sender** observes a component property and sends OSC messages
+on changes to it.
 
 OSC Monitor
 -----------
 
 ![OSC Monitor](https://i.imgur.com/ZExVcuz.png)
 
-**OSC Monitor** is a small utility to show incoming messages to existing OSC
-servers. It's useful to check if messages are correctly received at the
-servers. To open the monitor, navigate to **Window > OSC Monitor**.
+**OSC Monitor** is a small utility inspecting incoming OSC messages. To open
+the monitor, navigate to **Window > OSC Monitor**.
 
-Scripting Interface
--------------------
+Low-Level API
+-------------
 
-OSC Jack also provides non-Unity dependent classes that can be used from any
-C# script. These classes are useful when sending/receiving OSC messages that
-are not directly related to component properties or events.
+### OscClient (implements IDisposable)
 
-### OSC Client class
-
-`OscClient` provides basic functionalities to send OSC messages to a specific
-UDP port of a host. It supports `int`, `float` and `string` types, and it's
-capable of sending up to four elements within a single message. It implements
-`IDisposable`, so it can be manually terminated by calling the `Dispose` method
-(or left it until automatically being finalized).
+`OscClient` is a class for sending OSC messages. It supports `int`, `float` and
+`string` types. It also supports sending up to four elements within a single
+message.
 
 ```csharp
 // IP address, port number
-var client = new OscClient("127.0.0.1", 9000);
-
-// Send two-component float values ten times.
-for (var i = 0; i < 10; i++) {
+using (var client = new OscClient("127.0.0.1", 9000))
+{
+  // Send two-component float values ten times.
+  for (var i = 0; i < 10; i++)
+  {
     yield return new WaitForSeconds(0.5f);
     client.Send("/test",       // OSC address
                 i * 10.0f,     // First element
                 Random.value); // Second element
+  }
 }
-
-// Terminate the client.
-client.Dispose();
 ```
 
-### OSC Server class
+### OscServer (implements IDisposable)
 
-`OscServer` provides basic functionalities to receive OSC messages that are
-sent to a specific UDP port of the host. It starts receiving messages when a
-server instance is created, and terminates when disposed (via the `IDisposable`
-interface).
+`OscServer` is a class for receiving OSC messages. You can add a delegate to
+`MessageDispatcher` to receive messages sent to a specific OSC address (or give
+an empty string to receive all messages).
 
-You can add delegates to `MessageDispatcher` to receive messages sent to a
-specific OSC address, or you can give an empty string as an address to receive
-all messages arrived at the port.
+Please note that the server invokes the delegates in the server thread. You
+have to queue the events for processing them in the main thread.
 
-Note that the delegates are to be called in the server thread; You have to
-queue the events for processing them in the main thread (this will be required
-in most cases of Unity).
-
-Just like the client class, it supports `int`, `float` and `string` types, and
-capable of receiving up to four elements within a single message.
+It supports `int`, `float` and `string` types. It also supports receiving up to
+four elements within a single message.
 
 ```csharp
-var server = new OscServer(9000); // Port number
-
-server.MessageDispatcher.AddCallback(
+using (var server = new OscServer(9000)) // Port number
+{
+  server.MessageDispatcher.AddCallback(
     "/test", // OSC address
     (string address, OscDataHandle data) => {
         Debug.Log(string.Format("({0}, {1})",
             data.GetElementAsFloat(0),
             data.GetElementAsFloat(1)));
     }
-);
-
-yield return new WaitForSeconds(10);
-server.Dispose();
+  );
+  yield return new WaitForSeconds(10);
+}
 ```

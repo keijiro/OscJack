@@ -4,8 +4,7 @@ OSC Jack
 ![gif](https://i.imgur.com/mjp2o3t.gif)
 
 **OSC Jack** is a lightweight implementation of [OSC] (Open Sound Control)
-server/client written in C#, mainly aiming to provide basic OSC support to
-[Unity].
+server/client written in C#, mainly aiming to provide OSC support to [Unity].
 
 [OSC]: http://opensoundcontrol.org/
 [Unity]: https://unity3d.com/
@@ -43,7 +42,7 @@ OSC Components
 
 ### OSC Event Receiver
 
-![OSC Event Receiver](https://i.imgur.com/tWUe42Y.png)
+![Event Receiver](https://user-images.githubusercontent.com/343936/165036750-63baad08-5b3c-4145-b9b9-e956d199d3dd.png)
 
 **OSC Event Receiver** receives OSC messages and invokes a [UnityEvent] with
 received data.
@@ -52,7 +51,7 @@ received data.
 
 ### OSC Property Sender
 
-![OSC Property Sender](https://i.imgur.com/dkx26EE.png)
+![Property Sender](https://user-images.githubusercontent.com/343936/165036537-2b80d2ed-a69a-4101-8678-86d244440369.png)
 
 **OSC Property Sender** observes a component property and sends OSC messages
 on changes to it.

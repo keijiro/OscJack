@@ -37,6 +37,20 @@ window.
 
 [scoped registry]: https://docs.unity3d.com/Manual/upm-scoped.html
 
+OSC Connection
+--------------
+
+![OSC Connection](https://user-images.githubusercontent.com/343936/165038054-33bebb1c-27b6-4fa3-9dd7-6f4091c7eb65.png)
+
+You have to create an **OSC Connection** file to specify a connection type,
+a host address and a port number. To create a new OSC Connection file, navigate
+to Assets > Create > ScriptableObjects > OSC Jack > Connection.
+
+At the moment, OSC Jack only supports the UDP connection type.
+
+You have to specify a target host address to send OSC messages (you can leave
+it empty for receive-only connections).
+
 OSC Components
 --------------
 

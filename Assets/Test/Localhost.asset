@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3fc33fd9d04d644019471cb272c0fe46, type: 3}
-  m_Name: Recv
+  m_Name: Localhost
   m_EditorClassIdentifier: 
-  type: 1
+  type: 0
   host: 127.0.0.1
   port: 8000

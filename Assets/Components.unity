@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e43cc78b62f2184d8bebe41bd574f9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _connection: {fileID: 11400000, guid: 96e286b9bd38e4ab6b69317fb732b9e6, type: 2}
+  _connection: {fileID: 11400000, guid: f7b4d81f096794d4c83a2532303474e2, type: 2}
   _oscAddress: /position
   _dataSource: {fileID: 1711441387}
   _propertyName: position
@@ -201,7 +201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51f8f979447c54247bcba0d5441e6081, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _connection: {fileID: 11400000, guid: 8ac116650d3444ea595dd30d83aba445, type: 2}
+  _connection: {fileID: 11400000, guid: f7b4d81f096794d4c83a2532303474e2, type: 2}
   _oscAddress: /position
   _dataType: 5
   _event:
@@ -5438,7 +5438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51f8f979447c54247bcba0d5441e6081, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _connection: {fileID: 11400000, guid: 8ac116650d3444ea595dd30d83aba445, type: 2}
+  _connection: {fileID: 11400000, guid: f7b4d81f096794d4c83a2532303474e2, type: 2}
   _oscAddress: /intensity
   _dataType: 2
   _event:
@@ -5524,7 +5524,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e43cc78b62f2184d8bebe41bd574f9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _connection: {fileID: 11400000, guid: 96e286b9bd38e4ab6b69317fb732b9e6, type: 2}
+  _connection: {fileID: 11400000, guid: f7b4d81f096794d4c83a2532303474e2, type: 2}
   _oscAddress: /intensity
   _dataSource: {fileID: 2052016885}
   _propertyName: position

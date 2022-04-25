@@ -13,9 +13,8 @@ namespace OscJack
         SerializedProperty _host;
         SerializedProperty _port;
 
-        GUIContent[] _typeLabels = { new GUIContent("UDP Send"),
-                                     new GUIContent("UDP Receive") };
-        int[] _typeValues = { 0, 1 };
+        GUIContent[] _typeLabels = { new GUIContent("UDP") };
+        int[] _typeValues = { 0 };
 
         void OnEnable()
         {
@@ -29,11 +28,7 @@ namespace OscJack
             serializedObject.Update();
 
             EditorGUILayout.IntPopup(_type, _typeLabels, _typeValues);
-
-            if (_type.hasMultipleDifferentValues ||
-                _type.enumValueIndex == (int)OscConnectionType.UdpSender)
-                EditorGUILayout.PropertyField(_host);
-
+            EditorGUILayout.PropertyField(_host);
             EditorGUILayout.PropertyField(_port);
 
             serializedObject.ApplyModifiedProperties();

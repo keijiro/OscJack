@@ -3,10 +3,11 @@ OSC Jack
 
 ![gif](https://i.imgur.com/mjp2o3t.gif)
 
-**OSC Jack** is a lightweight implementation of [OSC] (Open Sound Control)
-server/client written in C#, mainly aiming to provide OSC support to [Unity].
+**OSC Jack** is a lightweight implementation of [OSC (Open Sound Control)]
+server/client classes written in C#, mainly aiming to provide OSC support to
+[Unity].
 
-[OSC]: http://opensoundcontrol.org/
+[OSC (Open Sound Control)]: http://opensoundcontrol.org/
 [Unity]: https://unity3d.com/
 
 System Requirements
@@ -20,36 +21,27 @@ network-restrictive platforms like WebGL.
 How To Install
 --------------
 
-This package uses the [scoped registry] feature to resolve package
-dependencies. Open the Package Manager page in the Project Settings window and
-add the following entry to the Scoped Registries list:
+This package is available in the `Keijiro` scoped registry.
 
 - Name: `Keijiro`
 - URL: `https://registry.npmjs.com`
 - Scope: `jp.keijiro`
 
-![Scoped Registry](https://user-images.githubusercontent.com/343936/162576797-ae39ee00-cb40-4312-aacd-3247077e7fa1.png)
+Please follow [this gist] to add the registry to your project.
 
-Now you can install the package from My Registries page in the Package Manager
-window.
-
-![My Registries](https://user-images.githubusercontent.com/343936/162576825-4a9a443d-62f9-48d3-8a82-a3e80b486f04.png)
-
-[scoped registry]: https://docs.unity3d.com/Manual/upm-scoped.html
+[this gist]: https://gist.github.com/keijiro/f8c7e8ff29bfe63d86b888901b82644c
 
 OSC Connection
 --------------
 
 ![OSC Connection](https://user-images.githubusercontent.com/343936/165038054-33bebb1c-27b6-4fa3-9dd7-6f4091c7eb65.png)
 
-You have to create an **OSC Connection** file to specify a connection type,
-a host address and a port number. To create a new OSC Connection file, navigate
-to Assets > Create > ScriptableObjects > OSC Jack > Connection.
+The OSC Jack components require **OSC Connection** files to specify connection
+types, host addresses and port numbers. To create a new OSC Connection file,
+navigate to Assets > Create > ScriptableObjects > OSC Jack > Connection.
 
-At the moment, OSC Jack only supports the UDP connection type.
-
-You have to specify a target host address to send OSC messages (you can leave
-it empty for receive-only connections).
+You must specify a target host address to send OSC messages; You can leave it
+empty for receive-only connections.
 
 OSC Components
 --------------
@@ -76,16 +68,18 @@ OSC Monitor
 ![OSC Monitor](https://i.imgur.com/ZExVcuz.png)
 
 **OSC Monitor** is a small utility inspecting incoming OSC messages. To open
-the monitor, navigate to **Window > OSC Monitor**.
+the monitor, navigate to Window > OSC Monitor.
 
 Low-Level API
 -------------
 
+Currently, the OSC Jack low-level API only supports `int`, `float` and `string`
+data types.
+
 ### OscClient (implements IDisposable)
 
-`OscClient` is a class for sending OSC messages. It supports `int`, `float` and
-`string` types. It also supports sending up to four elements within a single
-message.
+`OscClient` is a class for sending OSC messages. It supports up to four
+arguments within a single message.
 
 ```csharp
 // IP address, port number
@@ -104,15 +98,14 @@ using (var client = new OscClient("127.0.0.1", 9000))
 
 ### OscServer (implements IDisposable)
 
-`OscServer` is a class for receiving OSC messages. You can add a delegate to
-`MessageDispatcher` to receive messages sent to a specific OSC address (or give
-an empty string to receive all messages).
+`OscServer` is a class for receiving OSC messages. It supports up to four
+arguments within a single message.
+
+You can add a delegate to `MessageDispatcher` to receive messages sent to a
+specific OSC address (or give an empty string to receive all messages).
 
 Please note that the server invokes the delegates in the server thread. You
 have to queue the events for processing them in the main thread.
-
-It supports `int`, `float` and `string` types. It also supports receiving up to
-four elements within a single message.
 
 ```csharp
 using (var server = new OscServer(9000)) // Port number

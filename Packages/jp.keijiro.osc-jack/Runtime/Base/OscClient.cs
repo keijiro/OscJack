@@ -40,77 +40,26 @@ namespace OscJack
             _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
         }
 
-        public void Send(string address, int data)
+        public void Send(string address, params int[] data)
         {
             _encoder.Clear();
             _encoder.Append(address);
-            _encoder.Append(",i");
-            _encoder.Append(data);
+            _encoder.Append(",iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii".Substring(0, data.Length + 1));
+            foreach(int d in data)
+                _encoder.Append(d);
             _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
         }
 
-        public void Send(string address, int element1, int element2)
+        public void Send(string address, params float[] data)
         {
             _encoder.Clear();
             _encoder.Append(address);
-            _encoder.Append(",ii");
-            _encoder.Append(element1);
-            _encoder.Append(element2);
+            _encoder.Append(",ffffffffffffffffffffffffffffffff".Substring(0, data.Length + 1));
+            foreach(float d in data)
+                _encoder.Append(d);
             _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
         }
 
-        public void Send(string address, int element1, int element2, int element3)
-        {
-            _encoder.Clear();
-            _encoder.Append(address);
-            _encoder.Append(",iii");
-            _encoder.Append(element1);
-            _encoder.Append(element2);
-            _encoder.Append(element3);
-            _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
-        }
-
-        public void Send(string address, float data)
-        {
-            _encoder.Clear();
-            _encoder.Append(address);
-            _encoder.Append(",f");
-            _encoder.Append(data);
-            _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
-        }
-
-        public void Send(string address, float element1, float element2)
-        {
-            _encoder.Clear();
-            _encoder.Append(address);
-            _encoder.Append(",ff");
-            _encoder.Append(element1);
-            _encoder.Append(element2);
-            _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
-        }
-
-        public void Send(string address, float element1, float element2, float element3)
-        {
-            _encoder.Clear();
-            _encoder.Append(address);
-            _encoder.Append(",fff");
-            _encoder.Append(element1);
-            _encoder.Append(element2);
-            _encoder.Append(element3);
-            _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
-        }
-
-        public void Send(string address, float element1, float element2, float element3, float element4)
-        {
-            _encoder.Clear();
-            _encoder.Append(address);
-            _encoder.Append(",ffff");
-            _encoder.Append(element1);
-            _encoder.Append(element2);
-            _encoder.Append(element3);
-            _encoder.Append(element4);
-            _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
-        }
 
         public void Send(string address, string data)
         {

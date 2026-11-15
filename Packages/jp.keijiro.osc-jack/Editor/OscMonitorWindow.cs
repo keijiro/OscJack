@@ -31,18 +31,23 @@ namespace OscJack
 
         void MonitorCallback(string address, OscDataHandle data)
         {
-            _stringBuilder.Length = 0;
-            _stringBuilder.Append(address).Append(": ");
-
-            var ecount = data.GetElementCount();
-            for (var i = 0; i < ecount; i++)
+            // This callback is invoked from each server's thread, so it can
+            // run concurrently when there are multiple servers.
+            lock (_stringBuilder)
             {
-                _stringBuilder.Append(data.GetElementAsString(i));
-                if (i < ecount - 1) _stringBuilder.Append(", ");
-            }
+                _stringBuilder.Length = 0;
+                _stringBuilder.Append(address).Append(": ");
 
-            _logLines[_logCount] = _stringBuilder.ToString();
-            _logCount = (_logCount + 1) % _logLines.Length;
+                var ecount = data.GetElementCount();
+                for (var i = 0; i < ecount; i++)
+                {
+                    _stringBuilder.Append(data.GetElementAsString(i));
+                    if (i < ecount - 1) _stringBuilder.Append(", ");
+                }
+
+                _logLines[_logCount] = _stringBuilder.ToString();
+                _logCount = (_logCount + 1) % _logLines.Length;
+            }
         }
 
         void Update()
